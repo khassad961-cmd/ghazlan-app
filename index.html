@@ -1,0 +1,2516 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="theme-color" content="#0a0c12" />
+<link rel="manifest" href="./manifest.json" />
+<link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png" />
+<link rel="apple-touch-icon" href="./icon-192.png" />
+<title>غزلان — Messenger Roleplay v5</title>
+<style>
+  :root{
+    --bg:#0a0c12; --panel:#12151f; --card:#1b2030; --border:#262d42;
+    --text:#f3f6ff; --muted:#94a3b8;
+    --accent1:#0084ff; --accent2:#7c3aed; --accent3:#38bdf8;
+    --user-bubble:linear-gradient(135deg,#0084ff,#6366f1); --user-text:#ffffff;
+    --bot-bubble:#242836; --bot-text:#f1f5f9;
+    --emerald:#10b981; --rose:#f43f5e; --amber:#f59e0b;
+    --bubble-radius:20px; --font-size:14.5px;
+    --wall-blur:0px; --wall-dim:0.45;
+  }
+
+  body[data-theme="messenger-dark"]{
+    --bg:#0a0c12; --panel:#12151f; --card:#1b2030; --border:#262d42;
+    --text:#f3f6ff; --muted:#94a3b8; --accent1:#0084ff; --accent2:#7c3aed; --accent3:#38bdf8;
+    --user-bubble:linear-gradient(135deg,#0084ff,#6366f1); --user-text:#fff;
+    --bot-bubble:#242836; --bot-text:#f1f5f9;
+  }
+  body[data-theme="messenger-light"]{
+    --bg:#ffffff; --panel:#f8fafc; --card:#f1f5f9; --border:#e2e8f0;
+    --text:#0f172a; --muted:#64748b; --accent1:#0084ff; --accent2:#0062ff; --accent3:#0284c7;
+    --user-bubble:linear-gradient(135deg,#0084ff,#0099ff); --user-text:#fff;
+    --bot-bubble:#eef0f4; --bot-text:#0f172a;
+  }
+  body[data-theme="midnight-rose"]{
+    --bg:#0f0913; --panel:#1a1121; --card:#251830; --border:#3d2750;
+    --text:#fdf2f8; --muted:#c4a8d8; --accent1:#ec4899; --accent2:#a855f7; --accent3:#f472b6;
+    --user-bubble:linear-gradient(135deg,#ec4899,#9333ea); --user-text:#fff;
+    --bot-bubble:#2a1b36; --bot-text:#fdf2f8;
+  }
+  body[data-theme="ocean-glass"]{
+    --bg:#06131c; --panel:#0c1e2b; --card:#122b3d; --border:#1e425c;
+    --text:#ecfeff; --muted:#7dd3fc; --accent1:#06b6d4; --accent2:#0284c7; --accent3:#22d3ee;
+    --user-bubble:linear-gradient(135deg,#06b6d4,#2563eb); --user-text:#fff;
+    --bot-bubble:#122d40; --bot-text:#ecfeff;
+  }
+  body[data-theme="emerald-night"]{
+    --bg:#06120e; --panel:#0d1f19; --card:#132d25; --border:#1f473a;
+    --text:#ecfdf5; --muted:#6ee7b7; --accent1:#10b981; --accent2:#059669; --accent3:#34d399;
+    --user-bubble:linear-gradient(135deg,#10b981,#0d9488); --user-text:#fff;
+    --bot-bubble:#15332a; --bot-text:#ecfdf5;
+  }
+  body[data-theme="sunset-peach"]{
+    --bg:#160d0b; --panel:#221512; --card:#2e1d19; --border:#4a2f28;
+    --text:#fff7ed; --muted:#fdba74; --accent1:#f97316; --accent2:#ec4899; --accent3:#fb923c;
+    --user-bubble:linear-gradient(135deg,#f97316,#e11d48); --user-text:#fff;
+    --bot-bubble:#33201c; --bot-text:#fff7ed;
+  }
+  body[data-theme="amoled-pure"]{
+    --bg:#000000; --panel:#0a0a0d; --card:#141419; --border:#24242c;
+    --text:#ffffff; --muted:#8e8ea0; --accent1:#3b82f6; --accent2:#8b5cf6; --accent3:#60a5fa;
+    --user-bubble:linear-gradient(135deg,#2563eb,#7c3aed); --user-text:#fff;
+    --bot-bubble:#1c1c22; --bot-text:#ffffff;
+  }
+  body[data-theme="royal-violet"]{
+    --bg:#0d0919; --panel:#161029; --card:#20173b; --border:#362863;
+    --text:#f5f3ff; --muted:#c4b5fd; --accent1:#8b5cf6; --accent2:#6366f1; --accent3:#a78bfa;
+    --user-bubble:linear-gradient(135deg,#7c3aed,#4f46e5); --user-text:#fff;
+    --bot-bubble:#241a42; --bot-text:#f5f3ff;
+  }
+  body[data-theme="warm-coffee"]{
+    --bg:#130f0c; --panel:#1d1713; --card:#29211b; --border:#40332a;
+    --text:#faf5f0; --muted:#cbb5a2; --accent1:#d97706; --accent2:#b45309; --accent3:#f59e0b;
+    --user-bubble:linear-gradient(135deg,#d97706,#b45309); --user-text:#fff;
+    --bot-bubble:#2d241e; --bot-text:#faf5f0;
+  }
+  body[data-theme="neon-cyber"]{
+    --bg:#070812; --panel:#0e1022; --card:#161933; --border:#2a2f5c;
+    --text:#f0f9ff; --muted:#818cf8; --accent1:#06b6d4; --accent2:#d946ef; --accent3:#22d3ee;
+    --user-bubble:linear-gradient(135deg,#06b6d4,#d946ef); --user-text:#fff;
+    --bot-bubble:#181c38; --bot-text:#f0f9ff;
+  }
+
+  *{box-sizing:border-box;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;padding:0;height:100%;background:var(--bg);color:var(--text);overflow:hidden}
+  body{display:flex;flex-direction:column;height:100dvh;position:relative;transition:background .25s,color .25s}
+
+  #wallLayer{
+    position:fixed;inset:0;z-index:0;pointer-events:none;
+    background-size:cover;background-position:center;
+    filter:blur(var(--wall-blur));transform:scale(1.04);transition:background .3s;
+  }
+  #wallDim{
+    position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:rgba(0,0,0,var(--wall-dim));opacity:0;transition:opacity .3s;
+  }
+  body.has-wall-img #wallDim{opacity:1}
+
+  /* ULTRA-SLIM SINGLE-ROW MESSENGER HEADER (Spacious Full-Screen Chat!) */
+  header{
+    position:relative;z-index:20;
+    background:color-mix(in srgb, var(--panel) 92%, transparent);
+    backdrop-filter:blur(14px);border-bottom:1px solid var(--border);
+    padding:7px 10px;display:flex;align-items:center;justify-content:space-between;gap:8px;
+    min-height:54px;
+  }
+  .h-right,.h-left{display:flex;align-items:center;gap:7px;min-width:0}
+  .h-profile{display:flex;align-items:center;gap:9px;min-width:0;cursor:pointer;padding:2px 4px;border-radius:12px}
+  .h-profile:hover{background:color-mix(in srgb, var(--card) 75%, transparent)}
+
+  .av-wrap{position:relative;width:38px;height:38px;flex-shrink:0}
+  .av{
+    width:100%;height:100%;border-radius:50%;overflow:hidden;
+    background:linear-gradient(135deg,var(--accent1),var(--accent2));
+    display:flex;align-items:center;justify-content:center;
+    font-size:18px;font-weight:800;color:#fff;box-shadow:0 2px 8px rgba(0,0,0,.28);
+  }
+  .av img{width:100%;height:100%;object-fit:cover;display:block}
+  .online-dot{
+    position:absolute;bottom:0;left:0;width:10px;height:10px;border-radius:50%;
+    background:#22c55e;border:2px solid var(--panel);
+  }
+  .brand-col{display:flex;flex-direction:column;min-width:0}
+  .brand{font-weight:800;font-size:15px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .status-line{font-size:11px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:190px}
+
+  .icon-btn{
+    background:transparent;border:none;color:var(--accent1);
+    width:36px;height:36px;border-radius:50%;display:inline-flex;align-items:center;
+    justify-content:center;font-size:18px;cursor:pointer;transition:.15s;padding:0;flex-shrink:0;
+  }
+  .icon-btn:hover{background:var(--card)}
+  .icon-btn:active{transform:scale(.9)}
+  .icon-btn.on{background:var(--user-bubble);color:#fff}
+
+  /* Toasts & In-app Quick Reply Notification */
+  #toastWrap{
+    position:fixed;top:12px;left:50%;transform:translateX(-50%);z-index:2000;
+    display:flex;flex-direction:column;gap:8px;width:min(420px,92vw);pointer-events:none;
+  }
+  .toast{
+    pointer-events:auto;background:var(--panel);border:1px solid var(--border);
+    color:var(--text);padding:10px 14px;border-radius:16px;font-size:13px;
+    box-shadow:0 12px 32px rgba(0,0,0,.45);display:flex;flex-direction:column;gap:8px;
+    animation:slideDown .22s ease;
+  }
+  @keyframes slideDown{from{opacity:0;transform:translateY(-12px)}to{opacity:1;transform:none}}
+  .toast-row{display:flex;align-items:center;gap:10px}
+  .toast-reply{display:flex;gap:6px}
+  .toast-reply input{flex:1;background:var(--card);border:1px solid var(--border);color:var(--text);padding:6px 10px;border-radius:99px;font-size:12.5px;outline:none}
+
+  /* Main Chat Stream */
+  #chat{
+    position:relative;z-index:5;flex:1;overflow-y:auto;
+    padding:10px 12px 14px;display:flex;flex-direction:column;gap:4px;
+    max-width:860px;width:100%;margin:0 auto;scroll-behavior:smooth;
+  }
+
+  .msg-row{display:flex;align-items:flex-end;gap:7px;max-width:100%;animation:msgIn .18s ease}
+  .msg-row.user-row{flex-direction:row;justify-content:flex-start}
+  .msg-row.bot-row{flex-direction:row-reverse;justify-content:flex-start}
+  .msg-row.new-group{margin-top:10px}
+  @keyframes msgIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+
+  .msg-av-slot{width:28px;height:28px;flex-shrink:0;display:flex;align-items:flex-end;justify-content:center}
+  .msg-av{
+    width:28px;height:28px;border-radius:50%;overflow:hidden;
+    background:linear-gradient(135deg,var(--accent1),var(--accent2));
+    display:flex;align-items:center;justify-content:center;font-size:14px;color:#fff;
+  }
+  .msg-av img{width:100%;height:100%;object-fit:cover;display:block}
+
+  .msg-col{display:flex;flex-direction:column;max-width:80%;min-width:0}
+  .msg-row.user-row .msg-col{align-items:flex-start}
+  .msg-row.bot-row .msg-col{align-items:flex-end}
+
+  .sender-name-lbl{font-size:11px;font-weight:700;color:var(--muted);margin:0 10px 3px}
+
+  /* Quoted Reply Preview inside Message */
+  .quote-chip{
+    font-size:11.5px;color:var(--muted);background:color-mix(in srgb,var(--card) 75%,transparent);
+    border-right:3px solid var(--accent1);padding:4px 9px;border-radius:10px;
+    margin-bottom:3px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  }
+
+  /* Messenger Bubbles */
+  .bubble{
+    position:relative;padding:9px 14px;line-height:1.58;font-size:var(--font-size);
+    border-radius:var(--bubble-radius);word-wrap:break-word;overflow-wrap:anywhere;
+  }
+  .bubble.user-b{
+    background:var(--user-bubble);color:var(--user-text);
+    border-bottom-right-radius:6px;box-shadow:0 2px 10px rgba(0,0,0,.18);
+  }
+  .bubble.bot-b{
+    background:var(--bot-bubble);color:var(--bot-text);
+    border-bottom-left-radius:6px;box-shadow:0 2px 10px rgba(0,0,0,.14);
+  }
+  .bubble .md p{margin:0 0 5px}
+  .bubble .md p:last-child{margin-bottom:0}
+  .bubble .md em{opacity:.85}
+
+  /* Frameless Image & Stickers (Zero bubble border!) */
+  .frameless-img-wrap{
+    display:inline-block;max-width:250px;border-radius:18px;overflow:hidden;
+    cursor:zoom-in;line-height:0;box-shadow:0 4px 16px rgba(0,0,0,.28);
+  }
+  .frameless-img-wrap img{display:block;max-width:100%;max-height:280px;border-radius:18px;object-fit:cover}
+  .sticker-msg{
+    position:relative;font-size:64px;line-height:1.1;padding:4px 6px;
+    filter:drop-shadow(0 6px 12px rgba(0,0,0,.35));user-select:none;
+  }
+  .sticker-card-msg{
+    position:relative;padding:12px 18px;border-radius:22px;font-size:15px;font-weight:800;
+    color:#fff;box-shadow:0 6px 18px rgba(0,0,0,.3);display:inline-flex;align-items:center;gap:8px;
+  }
+
+  /* Reaction Badge */
+  .react-badge{
+    position:absolute;bottom:-9px;background:var(--panel);border:1px solid var(--border);
+    border-radius:99px;padding:1px 6px;font-size:12px;box-shadow:0 2px 6px rgba(0,0,0,.3);
+    cursor:pointer;z-index:2;
+  }
+  .bubble.user-b .react-badge,.sticker-msg .react-badge{left:8px}
+  .bubble.bot-b .react-badge{right:8px}
+
+  .msg-time{font-size:10px;color:var(--muted);margin:3px 8px 0;opacity:.75;display:none}
+  body.show-times .msg-time,.msg-row.show-time .msg-time{display:block}
+
+  /* 3-Dot Messenger Typing Indicator ONLY */
+  .typing-bubble{
+    display:inline-flex;align-items:center;justify-content:center;gap:5px;
+    padding:12px 16px;border-radius:20px;border-bottom-left-radius:6px;
+    background:var(--bot-bubble);min-width:60px;min-height:38px;
+  }
+  .typing-bubble i{
+    width:8px;height:8px;border-radius:50%;background:var(--muted);
+    display:block;animation:mBounce 1.3s infinite ease-in-out;
+  }
+  .typing-bubble i:nth-child(2){animation-delay:.18s}
+  .typing-bubble i:nth-child(3){animation-delay:.36s}
+  @keyframes mBounce{0%,60%,100%{transform:translateY(0);opacity:.45}30%{transform:translateY(-5px);opacity:1}}
+
+  /* Interactive Quick-Reply Suggestions Strip (Optional & Toggleable) */
+  #quickRepliesBar{
+    position:relative;z-index:15;display:none;gap:6px;padding:4px 12px 6px;
+    overflow-x:auto;scrollbar-width:none;max-width:860px;width:100%;margin:0 auto;
+  }
+  #quickRepliesBar.show{display:flex}
+  #quickRepliesBar::-webkit-scrollbar{display:none}
+  .qr-chip{
+    background:color-mix(in srgb,var(--card) 90%,transparent);
+    border:1px solid var(--border);color:var(--text);
+    padding:6px 12px;border-radius:99px;font-size:12.5px;font-weight:600;
+    cursor:pointer;white-space:nowrap;flex-shrink:0;transition:.15s;
+  }
+  .qr-chip:hover{border-color:var(--accent1);background:var(--user-bubble);color:#fff}
+
+  /* Group Participants Bar (LettuceAI) */
+  .group-bar{
+    position:relative;z-index:15;display:none;align-items:center;justify-content:space-between;gap:8px;
+    padding:6px 10px;background:color-mix(in srgb,var(--panel) 92%,transparent);
+    border-top:1px solid var(--border);max-width:860px;width:100%;margin:0 auto;
+  }
+  .group-bar.show{display:flex}
+  .group-members-row{display:flex;align-items:center;gap:7px;overflow-x:auto;scrollbar-width:none;padding:2px 0}
+  .group-members-row::-webkit-scrollbar{display:none}
+  .gm-pill{
+    display:inline-flex;align-items:center;gap:6px;padding:4px 10px 4px 6px;border-radius:99px;
+    background:var(--card);border:2px solid transparent;cursor:pointer;font-size:12px;font-weight:700;
+    color:var(--text);white-space:nowrap;flex-shrink:0;
+  }
+  .gm-pill.cued{border-color:var(--accent1);background:color-mix(in srgb,var(--accent1) 20%,var(--card))}
+  .gm-pill.muted{opacity:.42;text-decoration:line-through}
+  .gm-pill .mini-av{width:22px;height:22px;border-radius:50%;overflow:hidden;display:inline-flex;align-items:center;justify-content:center;background:var(--user-bubble);font-size:12px;color:#fff}
+  .gm-pill .mini-av img{width:100%;height:100%;object-fit:cover}
+
+  /* Sticker & Emoji Picker Panel */
+  #stickerTray{
+    display:none;background:var(--panel);border-top:1px solid var(--border);
+    padding:10px;max-width:860px;width:100%;margin:0 auto;position:relative;z-index:20;
+    flex-direction:column;gap:8px;max-height:240px;
+  }
+  #stickerTray.open{display:flex}
+  .st-tabs{display:flex;gap:6px}
+  .st-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(56px,1fr));gap:8px;overflow-y:auto;padding:2px}
+  .st-btn{
+    background:var(--card);border:1px solid var(--border);border-radius:14px;
+    padding:8px 4px;font-size:28px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.14s;
+  }
+  .st-btn:hover{transform:scale(1.08);border-color:var(--accent1)}
+  .st-card-btn{
+    grid-column:span 2;border:none;border-radius:14px;padding:10px 8px;
+    font-size:12.5px;font-weight:800;color:#fff;cursor:pointer;
+  }
+
+  /* Composer */
+  footer{
+    position:relative;z-index:20;
+    background:color-mix(in srgb, var(--panel) 95%, transparent);
+    backdrop-filter:blur(14px);border-top:1px solid var(--border);
+    padding:7px 8px 9px;
+  }
+  .composer-wrap{max-width:860px;margin:0 auto;display:flex;flex-direction:column;gap:6px}
+  .reply-bar,.att-bar{
+    display:none;align-items:center;justify-content:space-between;gap:8px;
+    background:var(--card);padding:6px 10px;border-radius:12px;border:1px solid var(--border);font-size:12px;
+  }
+  .reply-bar.show,.att-bar.show{display:flex}
+  .att-bar img{width:38px;height:38px;border-radius:9px;object-fit:cover}
+  .foot-in{display:flex;gap:4px;align-items:flex-end}
+  .pill-input-box{
+    flex:1;display:flex;align-items:flex-end;gap:4px;
+    background:var(--card);border:1px solid var(--border);border-radius:24px;
+    padding:3px 10px;min-height:40px;
+  }
+  .pill-input-box:focus-within{border-color:var(--accent1)}
+  footer textarea{
+    flex:1;background:transparent;border:none;color:var(--text);
+    padding:7px 2px;font-size:14.5px;resize:none;max-height:120px;min-height:24px;
+    outline:none;line-height:1.45;
+  }
+  .send-btn{
+    background:var(--user-bubble);color:#fff;border:none;width:38px;height:38px;
+    border-radius:50%;font-size:17px;cursor:pointer;display:flex;align-items:center;
+    justify-content:center;flex-shrink:0;transition:.15s;
+  }
+  .send-btn:active{transform:scale(.9)}
+  .send-btn.stop-mode{background:var(--rose)}
+  .send-btn.emoji-mode{background:transparent;font-size:23px}
+
+  /* Drawers & Modals */
+  .drawer-bg{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:80;display:none}
+  .drawer-bg.open{display:block}
+  .drawer{
+    position:fixed;top:0;right:0;bottom:0;width:305px;max-width:88vw;
+    background:var(--panel);border-left:1px solid var(--border);z-index:90;
+    transform:translateX(100%);transition:transform .22s ease;
+    display:flex;flex-direction:column;padding:14px;gap:10px;
+  }
+  .drawer.open{transform:translateX(0)}
+  .drawer-left{right:auto;left:0;border-left:none;border-right:1px solid var(--border);transform:translateX(-100%)}
+  .drawer-left.open{transform:translateX(0)}
+
+  .char-card-row{
+    display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:14px;
+    background:var(--card);border:1.5px solid transparent;cursor:pointer;transition:.15s;
+  }
+  .char-card-row.active{border-color:var(--accent1)}
+  .char-card-row .av{width:38px;height:38px;font-size:18px;flex-shrink:0}
+
+  .chat-list{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:6px}
+  .chat-item{
+    display:flex;align-items:center;justify-content:space-between;gap:8px;
+    padding:8px 10px;border-radius:12px;background:var(--card);border:1px solid transparent;
+    cursor:pointer;font-size:13px;color:var(--text);
+  }
+  .chat-item.active{border-color:var(--accent1);font-weight:700}
+  .chat-item span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
+  .del-chat{background:none;border:none;color:var(--muted);font-size:14px;cursor:pointer;padding:2px 6px}
+  .del-chat:hover{color:var(--rose)}
+
+  .modal-bg{
+    position:fixed;inset:0;background:rgba(0,0,0,.72);backdrop-filter:blur(6px);
+    z-index:120;display:none;align-items:center;justify-content:center;padding:12px;
+  }
+  .modal-bg.open{display:flex}
+  .modal{
+    background:var(--panel);border:1px solid var(--border);border-radius:20px;
+    width:100%;max-width:490px;max-height:90dvh;overflow-y:auto;padding:16px;
+    display:flex;flex-direction:column;gap:12px;box-shadow:0 20px 55px rgba(0,0,0,.55);
+  }
+  .modal h3{margin:0;font-size:16px;display:flex;justify-content:space-between;align-items:center}
+  .sec-box{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:9px}
+  .sec-title{font-size:12px;font-weight:800;color:var(--accent3);display:flex;justify-content:space-between;align-items:center}
+  .field{display:flex;flex-direction:column;gap:4px}
+  .field label{font-size:11.5px;font-weight:700;color:var(--muted)}
+  .field input,.field select,.field textarea{
+    background:var(--bg);border:1px solid var(--border);color:var(--text);
+    padding:9px 11px;border-radius:11px;font-size:13px;outline:none;width:100%;
+  }
+  .field input:focus,.field select:focus,.field textarea:focus{border-color:var(--accent1)}
+  .row-gap{display:flex;gap:7px;align-items:center;flex-wrap:wrap}
+  .switch-row{
+    display:flex;justify-content:space-between;align-items:center;padding:8px 10px;
+    background:var(--bg);border-radius:11px;border:1px solid var(--border);font-size:12.5px;gap:8px;
+  }
+
+  button.btn{border:none;border-radius:11px;padding:9px 14px;font-size:12.5px;font-weight:700;cursor:pointer;color:#fff;transition:.15s;white-space:nowrap}
+  button.btn:active{transform:scale(.96)}
+  .btn-primary{background:var(--user-bubble)}
+  .btn-danger{background:var(--rose)}
+  .btn-chip{
+    background:var(--card);border:1px solid var(--border);color:var(--text);
+    padding:6px 11px;font-size:12px;border-radius:99px;cursor:pointer;font-weight:700;transition:.15s;
+  }
+  .btn-chip.active,.btn-chip:hover{background:var(--user-bubble);border-color:transparent;color:#fff}
+
+  .theme-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+  .theme-swatch{
+    display:flex;align-items:center;gap:8px;padding:9px 10px;border-radius:12px;
+    border:2px solid var(--border);background:var(--bg);cursor:pointer;font-size:12px;font-weight:700;color:var(--text);
+  }
+  .theme-swatch.active{border-color:var(--accent1)}
+  .sw-dot{width:22px;height:22px;border-radius:50%;flex-shrink:0}
+  .wall-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}
+  .wall-swatch{
+    height:44px;border-radius:11px;border:2px solid var(--border);cursor:pointer;
+    display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;
+  }
+  .wall-swatch.active{border-color:var(--accent1)}
+
+  /* Floating Messenger Chat Head */
+  #chatHead{
+    position:fixed;bottom:84px;left:16px;z-index:150;width:56px;height:56px;
+    border-radius:50%;cursor:grab;display:none;align-items:center;justify-content:center;
+    background:var(--user-bubble);box-shadow:0 8px 28px rgba(0,0,0,.5);
+    border:2.5px solid #fff;user-select:none;touch-action:none;
+  }
+  #chatHead.show{display:flex}
+  #chatHead .ch-av{width:100%;height:100%;border-radius:50%;overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:25px;color:#fff}
+  #chatHead .ch-av img{width:100%;height:100%;object-fit:cover;pointer-events:none}
+  #chatHead .ch-badge{
+    position:absolute;top:-3px;right:-3px;min-width:20px;height:20px;border-radius:99px;
+    background:var(--rose);color:#fff;font-size:11px;font-weight:800;display:none;
+    align-items:center;justify-content:center;padding:0 5px;border:2px solid var(--bg);
+  }
+  #chatHead .ch-badge.has{display:flex}
+  #miniPopup{
+    position:fixed;bottom:150px;left:14px;z-index:149;width:min(335px,92vw);height:410px;
+    background:var(--panel);border:1px solid var(--border);border-radius:20px;
+    box-shadow:0 18px 48px rgba(0,0,0,.6);display:none;flex-direction:column;overflow:hidden;
+  }
+  #miniPopup.open{display:flex}
+  .mp-head{padding:10px 12px;background:var(--card);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:8px}
+  .mp-msgs{flex:1;overflow-y:auto;padding:10px;display:flex;flex-direction:column;gap:6px}
+  .mp-foot{padding:8px;border-top:1px solid var(--border);display:flex;gap:6px}
+  .mp-foot input{flex:1;background:var(--card);border:1px solid var(--border);color:var(--text);padding:8px 12px;border-radius:99px;font-size:13px;outline:none}
+
+  /* Context Menu (Long Press / Right Click — Keeps chat 100% clean!) */
+  #ctxMenu{
+    position:fixed;z-index:1500;background:var(--panel);border:1px solid var(--border);
+    border-radius:16px;padding:6px;box-shadow:0 14px 36px rgba(0,0,0,.55);
+    display:none;flex-direction:column;gap:3px;min-width:175px;
+  }
+  #ctxMenu.open{display:flex}
+  .ctx-reacts{display:flex;justify-content:space-around;padding:4px 2px 6px;border-bottom:1px solid var(--border)}
+  .ctx-reacts button{background:none;border:none;font-size:20px;cursor:pointer;padding:2px 4px;border-radius:8px}
+  .ctx-reacts button:hover{background:var(--card);transform:scale(1.2)}
+  .ctx-item{background:none;border:none;color:var(--text);text-align:right;padding:8px 10px;border-radius:10px;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:8px}
+  .ctx-item:hover{background:var(--card)}
+
+  #pinLock{
+    position:fixed;inset:0;z-index:3000;background:var(--bg);display:none;
+    flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:20px;
+  }
+  #pinLock.open{display:flex}
+  .lightbox{position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:1600;display:none;align-items:center;justify-content:center;padding:16px}
+  .lightbox.open{display:flex}
+  .lightbox img{max-width:100%;max-height:90vh;border-radius:14px}
+  .mem-item{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;padding:8px 10px;background:var(--bg);border:1px solid var(--border);border-radius:10px;font-size:12.5px}
+  input[type="range"]{accent-color:var(--accent1);width:100%}
+  .welcome{margin:auto 0;text-align:center;padding:20px 10px;display:flex;flex-direction:column;align-items:center;gap:10px}
+  .welcome-av{width:76px;height:76px;border-radius:50%;overflow:hidden;background:var(--user-bubble);display:flex;align-items:center;justify-content:center;font-size:34px}
+  .welcome-av img{width:100%;height:100%;object-fit:cover}
+</style>
+</head>
+<body data-theme="messenger-dark">
+
+<div id="wallLayer"></div>
+<div id="wallDim"></div>
+<div id="toastWrap"></div>
+
+<!-- PIN Lock -->
+<div id="pinLock">
+  <div style="font-size:42px">🔒</div>
+  <h2 style="margin:0">التطبيق محمي برمز سري</h2>
+  <input id="pinUnlockInput" type="password" inputmode="numeric" maxlength="6" placeholder="أدخل الرمز السري..." style="background:var(--card);border:1px solid var(--border);color:var(--text);padding:12px 16px;border-radius:14px;font-size:18px;text-align:center;width:210px;outline:none" onkeydown="if(event.key==='Enter')unlockPin()" />
+  <button class="btn btn-primary" onclick="unlockPin()">فتح التطبيق 🔓</button>
+</div>
+
+<!-- ULTRA-SLIM SINGLE-ROW MESSENGER HEADER -->
+<header>
+  <div class="h-right">
+    <button class="icon-btn" onclick="toggleDrawer(true)" title="الشخصيات والمحادثات" style="color:var(--text)">☰</button>
+    <div class="h-profile" onclick="openChatInfo()" title="معلومات وحالة الشخصية">
+      <div class="av-wrap">
+        <div id="headerAv" class="av">🌙</div>
+        <span class="online-dot"></span>
+      </div>
+      <div class="brand-col">
+        <span id="brandTitle" class="brand">غزلان</span>
+        <span id="statusLine" class="status-line">رايقة ✨ • نشطة الآن</span>
+      </div>
+    </div>
+  </div>
+  <div class="h-left">
+    <button class="icon-btn" onclick="openCustomize()" title="السمات والخلفيات والكنية">🎨</button>
+    <button class="icon-btn" onclick="openChatInfo()" title="حالة الشخصية والتحكم في الحوار">ℹ️</button>
+    <button class="icon-btn" onclick="toggleSettings(true)" title="إعدادات النماذج والتطبيق">⚙️</button>
+  </div>
+</header>
+
+<!-- Right Drawer: Characters, Groups & Chat History (Moved out of top header!) -->
+<div id="drawerBg" class="drawer-bg" onclick="closeAllDrawers()"></div>
+<aside id="drawer" class="drawer">
+  <div class="row-gap" style="justify-content:space-between">
+    <strong style="font-size:15.5px">🎭 الشخصيات والمجموعات</strong>
+    <button class="icon-btn" style="width:30px;height:30px;font-size:14px;color:var(--muted)" onclick="closeAllDrawers()">✕</button>
+  </div>
+  <div class="row-gap">
+    <button class="btn btn-primary" style="flex:1" onclick="openCharStudio();closeAllDrawers()">➕ شخصية جديدة</button>
+    <button class="btn-chip" onclick="openGroupWizard();closeAllDrawers()">👥 مجموعة</button>
+  </div>
+
+  <div id="drawerCharsList" style="display:flex;flex-direction:column;gap:6px;max-height:38%;overflow-y:auto"></div>
+
+  <div class="sec-title" style="margin-top:4px">
+    <span>💬 سجل المحادثات</span>
+    <button class="btn-chip" style="padding:3px 9px;font-size:11px" onclick="createNewChatForActive();closeAllDrawers()">محادثة جديدة +</button>
+  </div>
+  <div id="chatList" class="chat-list"></div>
+
+  <div class="row-gap" style="padding-top:8px;border-top:1px solid var(--border)">
+    <button class="btn-chip" style="flex:1" onclick="exportBackup()">💾 نسخة احتياطية</button>
+    <button class="btn-chip" style="flex:1" onclick="document.getElementById('importFile').click()">📂 استرجاع</button>
+    <input id="importFile" type="file" accept=".json" style="display:none" onchange="importBackup(this)" />
+  </div>
+</aside>
+
+<!-- Left Drawer: Messenger Chat Info, Relationship & Conversation Controls -->
+<aside id="infoDrawer" class="drawer drawer-left">
+  <div class="row-gap" style="justify-content:space-between">
+    <strong style="font-size:15px">ℹ️ معلومات والتحكم في الدردشة</strong>
+    <button class="icon-btn" style="width:30px;height:30px;font-size:14px;color:var(--muted)" onclick="closeAllDrawers()">✕</button>
+  </div>
+  <div id="infoDrawerBody" style="flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:10px"></div>
+</aside>
+
+<!-- Customize Modal: Themes, Wallpapers, Avatars, Nicknames -->
+<div id="customBg" class="modal-bg" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="modal">
+    <h3>🎨 التخصيص والكنية والمظهر <button class="icon-btn" style="width:30px;height:30px;font-size:14px;color:var(--muted)" onclick="document.getElementById('customBg').classList.remove('open')">✕</button></h3>
+
+    <div class="sec-box">
+      <div class="sec-title"><span>🏷️ الكنية والألقاب (مثل ماسنجر)</span></div>
+      <div class="row-gap">
+        <div class="field" style="flex:1"><label>كنيتك في المحادثة</label><input id="userNameInput" placeholder="أسعد" onchange="saveAppearancePrefs()" /></div>
+        <div class="field" style="flex:1"><label>كنية <span id="nickCharOrig">غزلان</span> هنا</label><input id="charNickInput" placeholder="مثلاً: غزولة..." onchange="saveCharNickname()" /></div>
+      </div>
+    </div>
+
+    <div class="sec-box">
+      <div class="sec-title"><span>🌈 السمات والألوان (10 سمات)</span></div>
+      <div id="themeGrid" class="theme-grid"></div>
+    </div>
+
+    <div class="sec-box">
+      <div class="sec-title"><span>🖼️ خلفية الدردشة</span></div>
+      <div id="wallGrid" class="wall-grid"></div>
+      <div class="row-gap" style="margin-top:4px">
+        <button class="btn-chip" style="flex:1" onclick="document.getElementById('wallUpload').click()">📷 رفع صورة خلفية</button>
+        <button class="btn-chip" onclick="clearWallpaper()">إزالة</button>
+        <input id="wallUpload" type="file" accept="image/*" style="display:none" onchange="uploadWallpaper(this)" />
+      </div>
+      <div class="field">
+        <label>تمويه الخلفية: <span id="blurVal">0px</span></label>
+        <input id="wallBlurRange" type="range" min="0" max="14" value="0" oninput="updateWallFilters()" />
+      </div>
+      <div class="field">
+        <label>تعتيم الخلفية: <span id="dimVal">45%</span></label>
+        <input id="wallDimRange" type="range" min="0" max="85" value="45" oninput="updateWallFilters()" />
+      </div>
+    </div>
+
+    <div class="sec-box">
+      <div class="sec-title"><span>👤 صور البروفايل</span></div>
+      <div class="row-gap" style="justify-content:space-between">
+        <span style="font-size:12.5px">صورة <strong id="curCharAvatarLbl">غزلان</strong></span>
+        <div class="row-gap">
+          <button class="btn-chip" onclick="document.getElementById('charAvUpload').click()">📷 تغيير</button>
+          <button class="btn-chip" onclick="resetCurrentCharAvatar()">افتراضي</button>
+          <input id="charAvUpload" type="file" accept="image/*" style="display:none" onchange="uploadCharAvatar(this)" />
+        </div>
+      </div>
+      <div class="row-gap" style="justify-content:space-between">
+        <span style="font-size:12.5px">صورتك الشخصية</span>
+        <button class="btn-chip" onclick="document.getElementById('userAvUpload').click()">📷 رفع صورتك</button>
+        <input id="userAvUpload" type="file" accept="image/*" style="display:none" onchange="uploadUserAvatar(this)" />
+      </div>
+    </div>
+
+    <div class="sec-box">
+      <div class="sec-title"><span>✨ الفقاعات والإيموجي السريع</span></div>
+      <div class="row-gap" id="quickEmojiRow"></div>
+      <div class="field">
+        <label>استدارة الفقاعات: <span id="radVal">20px</span></label>
+        <input id="bubbleRadRange" type="range" min="8" max="26" value="20" oninput="saveAppearancePrefs()" />
+      </div>
+      <div class="field">
+        <label>حجم الخط: <span id="fontVal">14.5px</span></label>
+        <input id="fontSizeRange" type="range" min="12" max="19" step="0.5" value="14.5" oninput="saveAppearancePrefs()" />
+      </div>
+      <div class="switch-row">
+        <span>إظهار وقت الرسائل دائماً</span>
+        <input id="showTimeChk" type="checkbox" onchange="saveAppearancePrefs()" style="width:18px;height:18px" />
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Companion Relationship, Mood, Speech Controls & Memory Modal -->
+<div id="statusBg" class="modal-bg" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="modal">
+    <h3>🌙 حالة وعلاقة <span id="stCharName">غزلان</span> <button class="icon-btn" style="width:30px;height:30px;font-size:14px;color:var(--muted)" onclick="document.getElementById('statusBg').classList.remove('open')">✕</button></h3>
+
+    <div class="sec-box">
+      <div class="sec-title"><span>💭 المزاج والشعور الحالي</span></div>
+      <div class="row-gap" id="moodChips"></div>
+      <div class="field">
+        <label>ماذا تفعل الآن؟ (الحالة)</label>
+        <input id="stActivityInput" placeholder="مثلاً: تريح شوية وتسمع موسيقى..." />
+      </div>
+    </div>
+
+    <div class="sec-box">
+      <div class="sec-title"><span>🎚️ التحكم في أسلوب ونبرة الكلام</span></div>
+      <div class="row-gap">
+        <div class="field" style="flex:1">
+          <label>طول الردود</label>
+          <select id="stReplyLen">
+            <option value="short">قصير ومختصر (مثل ماسنجر)</option>
+            <option value="balanced">متوازن حسب الموقف</option>
+            <option value="detailed">مفصّل ومعبّر</option>
+          </select>
+        </div>
+        <div class="field" style="flex:1">
+          <label>نبرة الحوار</label>
+          <select id="stToneStyle">
+            <option value="natural">عفوية وواقعية</option>
+            <option value="playful">مرحة وتقلاش ومزاح</option>
+            <option value="warm">دافئة ورومانسية محترمة</option>
+            <option value="deep">هادئة وعميقة</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label>مرحلة العلاقة</label>
+        <select id="stStageSelect">
+          <option value="تعارف جديد">تعارف جديد 🌱</option>
+          <option value="صداقة عادية">صداقة عادية 🙂</option>
+          <option value="صداقة مقرّبة">صداقة مقرّبة 🌙</option>
+          <option value="ثقة قوية وتقارب">ثقة قوية وتقارب ✨</option>
+          <option value="إعجاب متبادل">إعجاب متبادل 💗</option>
+          <option value="علاقة عاطفية خاصة">علاقة عاطفية خاصة ❤️</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>🤝 الثقة: <strong id="trustVal">68%</strong></label>
+        <input id="stTrustRange" type="range" min="0" max="100" oninput="document.getElementById('trustVal').textContent=this.value+'%'" />
+      </div>
+      <div class="field">
+        <label>💗 الانسجام والود: <strong id="warmthVal">62%</strong></label>
+        <input id="stWarmthRange" type="range" min="0" max="100" oninput="document.getElementById('warmthVal').textContent=this.value+'%'" />
+      </div>
+      <div class="field">
+        <label>⚡ العناد / التوتر: <strong id="tensionVal">22%</strong></label>
+        <input id="stTensionRange" type="range" min="0" max="100" oninput="document.getElementById('tensionVal').textContent=this.value+'%'" />
+      </div>
+      <div class="field">
+        <label>📝 توجيه / ملاحظة إضافية للمحادثة (Author's Note)</label>
+        <textarea id="stNoteInput" rows="2" placeholder="مثلاً: نحن نتحدث في المساء، الجو هادئ..."></textarea>
+      </div>
+      <div class="switch-row">
+        <div><strong>تحديث تلقائي للمزاج والتفاعلات</strong><div style="font-size:11px;color:var(--muted)">تتفاعل الشخصية تلقائياً بإيموجي على رسائلك ويتغير مزاجها</div></div>
+        <input id="stAutoMoodChk" type="checkbox" style="width:18px;height:18px" />
+      </div>
+      <button class="btn btn-primary" onclick="saveCharStatus()">حفظ وتطبيق ✅</button>
+    </div>
+
+    <div class="sec-box">
+      <div class="sec-title"><span>🧠 الذاكرة طويلة المدى</span></div>
+      <button id="extractMemBtn" class="btn btn-primary" onclick="extractMemories()">✨ استخراج الذكريات من المحادثة</button>
+      <div class="row-gap">
+        <input id="newMemInput" style="flex:1;background:var(--bg);border:1px solid var(--border);color:var(--text);padding:8px 10px;border-radius:10px;font-size:12.5px" placeholder="أضف ذكرى أو تفصيل..." />
+        <button class="btn-chip" onclick="addManualMemory()">إضافة ➕</button>
+      </div>
+      <div id="memList" style="display:flex;flex-direction:column;gap:6px;max-height:170px;overflow-y:auto"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Character Studio Modal (LettuceAI Style) -->
+<div id="charStudioBg" class="modal-bg" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="modal">
+    <h3>🎭 <span id="csTitle">إنشاء شخصية جديدة</span> <button class="icon-btn" style="width:30px;height:30px;font-size:14px;color:var(--muted)" onclick="document.getElementById('charStudioBg').classList.remove('open')">✕</button></h3>
+    <input type="hidden" id="csEditId" />
+    <div class="sec-box">
+      <div class="sec-title"><span>1️⃣ الهوية والمظهر</span></div>
+      <div class="row-gap">
+        <div class="av" id="csAvPreview" style="width:52px;height:52px;font-size:24px;flex-shrink:0">🦊</div>
+        <div style="flex:1;display:flex;flex-direction:column;gap:6px">
+          <div class="row-gap">
+            <button class="btn-chip" onclick="document.getElementById('csAvFile').click()">📷 صورة</button>
+            <input id="csEmojiInput" placeholder="إيموجي 🦊" style="width:110px;background:var(--bg);border:1px solid var(--border);color:var(--text);padding:6px 9px;border-radius:9px;font-size:12.5px" oninput="previewCsEmoji()" />
+            <input id="csAvFile" type="file" accept="image/*" style="display:none" onchange="uploadCsAvatar(this)" />
+          </div>
+          <select id="csModeSelect" style="background:var(--bg);border:1px solid var(--border);color:var(--text);padding:7px;border-radius:9px;font-size:12px">
+            <option value="companion">وضع رفيق (علاقة ومزاج حي)</option>
+            <option value="roleplay">وضع تمثيل أدوار (سيناريو وقصة)</option>
+          </select>
+        </div>
+      </div>
+      <div class="row-gap">
+        <div class="field" style="flex:1"><label>اسم الشخصية *</label><input id="csName" placeholder="مثلاً: ياسمين، كريم..." /></div>
+        <div class="field" style="flex:1"><label>الصفة / الدور</label><input id="csTagline" placeholder="مثلاً: صديقة مقربة..." /></div>
+      </div>
+    </div>
+    <div class="sec-box">
+      <div class="sec-title"><span>2️⃣ الشخصية والأسلوب</span></div>
+      <div class="field"><label>السمات والطباع</label><input id="csTraits" placeholder="مرح، ذكي، صريح..." /></div>
+      <div class="field"><label>الوصف الكامل وطريقة الكلام *</label><textarea id="csPrompt" rows="4" placeholder="اكتب تفاصيل الشخصية، اللهجة، والطباع..."></textarea></div>
+      <div class="field"><label>الرسالة الافتتاحية</label><textarea id="csGreeting" rows="2" placeholder="أول رسالة تقولها الشخصية..."></textarea></div>
+    </div>
+    <div class="row-gap" style="justify-content:space-between">
+      <div class="row-gap">
+        <button id="csDeleteBtn" class="btn btn-danger" style="display:none" onclick="deleteCustomChar()">حذف 🗑️</button>
+        <button class="btn-chip" onclick="document.getElementById('importCharFile').click()">📂 استيراد</button>
+        <input id="importCharFile" type="file" accept=".json" style="display:none" onchange="importCharCard(this)" />
+      </div>
+      <button class="btn btn-primary" onclick="saveCustomChar()">حفظ الشخصية ✅</button>
+    </div>
+  </div>
+</div>
+
+<!-- Group Chat Wizard (LettuceAI 3-Step Flow) -->
+<div id="groupWizBg" class="modal-bg" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="modal">
+    <h3>👥 إنشاء محادثة جماعية (2–4+ شخصيات) <button class="icon-btn" style="width:30px;height:30px;font-size:14px;color:var(--muted)" onclick="document.getElementById('groupWizBg').classList.remove('open')">✕</button></h3>
+    <div class="sec-box">
+      <div class="sec-title"><span>1️⃣ اختر الشخصيات</span><span id="gwCount">0 محدد</span></div>
+      <div id="gwCharPicker" class="row-gap"></div>
+    </div>
+    <div class="sec-box">
+      <div class="sec-title"><span>2️⃣ نظام الأدوار (LettuceAI)</span></div>
+      <div class="field"><label>اسم المجموعة (اختياري)</label><input id="gwName" placeholder="مثلاً: قعدة صحاب..." /></div>
+      <div class="field">
+        <label>اختيار المتحدث التالي</label>
+        <select id="gwSpeakerMode">
+          <option value="smart">تلقائي ذكي (Smart + @الإشارات)</option>
+          <option value="roundrobin">بالتناوب (Round Robin)</option>
+          <option value="director_cue">وضع المخرج: اختر ثم أرسل (Director Cue)</option>
+          <option value="director_action">وضع المخرج: اضغط على الشخصية لترد</option>
+        </select>
+      </div>
+      <div class="field"><label>المشهد أو الموضوع الافتتاحي (اختياري)</label><textarea id="gwScene" rows="2" placeholder="مثلاً: سهرة في مقهى..."></textarea></div>
+    </div>
+    <button class="btn btn-primary" onclick="createGroupChat()">بدء المحادثة الجماعية 🚀</button>
+  </div>
+</div>
+
+<!-- Edit Message Modal -->
+<div id="editMsgBg" class="modal-bg" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="modal">
+    <h3>✏️ تعديل الرسالة <button class="icon-btn" style="width:30px;height:30px;font-size:14px;color:var(--muted)" onclick="document.getElementById('editMsgBg').classList.remove('open')">✕</button></h3>
+    <div class="field"><textarea id="editMsgArea" rows="4"></textarea></div>
+    <div class="row-gap" style="justify-content:flex-end">
+      <button class="btn btn-primary" onclick="saveEditedMessage()">حفظ التعديل ✅</button>
+    </div>
+  </div>
+</div>
+
+<!-- Settings Modal -->
+<div id="settingsBg" class="modal-bg" onclick="if(event.target===this)toggleSettings(false)">
+  <div class="modal">
+    <h3>⚙️ الإعدادات والسرعة والنماذج <button class="icon-btn" style="width:30px;height:30px;font-size:14px;color:var(--muted)" onclick="toggleSettings(false)">✕</button></h3>
+
+    <div class="sec-box">
+      <div class="sec-title"><span>⚡ المزوّد والسرعة والاستقرار</span></div>
+      <div class="field">
+        <label>المزوّد الأساسي</label>
+        <select id="providerSelect">
+          <option value="gemini">Google Gemini (مع تدوير المفاتيح والنماذج)</option>
+          <option value="groq">Groq السريع والمجاني (بدون ضغط 503 🔥)</option>
+          <option value="openrouter">OpenRouter</option>
+          <option value="custom">بروكسي مخصص (CLIProxyAPI / gemini-balance)</option>
+        </select>
+      </div>
+      <div class="switch-row">
+        <div><strong>⚡ البث المباشر (Streaming SSE)</strong><div style="font-size:11px;color:var(--muted)">ردود فورية تظهر كلمة بكلمة</div></div>
+        <input id="streamingChk" type="checkbox" checked style="width:18px;height:18px" />
+      </div>
+      <div class="switch-row">
+        <div><strong>🛡️ التبديل التلقائي (Anti-503)</strong><div style="font-size:11px;color:var(--muted)">يبدل بين المفاتيح والنماذج عند أي ضغط</div></div>
+        <input id="autoFallbackChk" type="checkbox" checked style="width:18px;height:18px" />
+      </div>
+      <div class="switch-row">
+        <div><strong>🚀 وضع السرعة القصوى (Zero-Thinking)</strong><div style="font-size:11px;color:var(--muted)">استجابة أسرع في Gemini 2.5 Flash</div></div>
+        <input id="fastModeChk" type="checkbox" checked style="width:18px;height:18px" />
+      </div>
+      <div class="switch-row">
+        <div><strong>✨ ردود تفاعلية ذكية</strong><div style="font-size:11px;color:var(--muted)">تفاعل الشخصية بالإيموجي على رسائلك + اقتراحات رد سريعة</div></div>
+        <input id="interactiveChk" type="checkbox" checked style="width:18px;height:18px" />
+      </div>
+    </div>
+
+    <div class="sec-box">
+      <div class="sec-title"><span>1️⃣ Google Gemini API (يدعم عدة مفاتيح)</span></div>
+      <div class="field"><textarea id="geminiKeyInput" rows="2" placeholder="AIzaSy... (مفتاح في كل سطر للتدوير)"></textarea></div>
+      <div class="row-gap">
+        <select id="geminiModelSelect" style="flex:1;background:var(--bg);border:1px solid var(--border);color:var(--text);padding:8px;border-radius:10px;font-size:12px">
+          <option value="auto">تلقائي ذكي</option>
+          <option value="gemini-2.5-flash">gemini-2.5-flash</option>
+          <option value="gemini-2.5-flash-lite">gemini-2.5-flash-lite</option>
+          <option value="gemini-2.0-flash">gemini-2.0-flash</option>
+          <option value="gemma-3-27b-it">gemma-3-27b-it</option>
+        </select>
+        <button class="btn-chip" onclick="fetchGeminiModels()">🔄 فحص</button>
+      </div>
+    </div>
+
+    <div class="sec-box">
+      <div class="sec-title"><span>2️⃣ Groq API (احتياطي مجاني وسريع)</span></div>
+      <div class="field"><input id="groqKeyInput" type="password" placeholder="gsk_..." /></div>
+      <div class="field">
+        <select id="groqModelSelect">
+          <option value="llama-3.3-70b-versatile">llama-3.3-70b-versatile</option>
+          <option value="meta-llama/llama-4-scout-17b-16e-instruct">llama-4-scout-17b</option>
+          <option value="qwen/qwen3-32b">qwen3-32b</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="sec-box">
+      <div class="sec-title"><span>3️⃣ OpenRouter أو بروكسي مخصص</span></div>
+      <div class="field"><input id="orKeyInput" type="password" placeholder="OpenRouter Key (sk-or-v1-...)" /></div>
+      <div class="field"><input id="orModelInput" placeholder="google/gemma-3-27b-it:free" /></div>
+      <div class="field"><input id="customUrlInput" placeholder="Custom OpenAI Endpoint URL (اختياري)" /></div>
+      <div class="row-gap">
+        <div class="field" style="flex:1"><input id="customKeyInput" type="password" placeholder="Proxy Key" /></div>
+        <div class="field" style="flex:1"><input id="customModelInput" placeholder="Model name" /></div>
+      </div>
+    </div>
+
+    <div class="sec-box">
+      <div class="sec-title"><span>🎛️ الرموز والأصوات والإشعارات والخصوصية</span></div>
+      <div class="field">
+        <label>الحد الأقصى للرموز: <strong id="maxTokVal">8192</strong></label>
+        <input id="maxTokRange" type="range" min="512" max="65536" step="512" oninput="document.getElementById('maxTokVal').textContent=this.value" />
+      </div>
+      <div class="field">
+        <label>الإبداعية (Temperature): <strong id="tempVal">0.88</strong></label>
+        <input id="tempRange" type="range" min="0" max="1.4" step="0.05" oninput="document.getElementById('tempVal').textContent=this.value" />
+      </div>
+      <div class="field">
+        <label>ذاكرة السياق (عدد الرسائل): <strong id="ctxVal">34</strong></label>
+        <input id="ctxRange" type="range" min="10" max="80" step="2" oninput="document.getElementById('ctxVal').textContent=this.value" />
+      </div>
+      <div class="switch-row">
+        <span>🔊 أصوات الإرسال والرد</span>
+        <input id="soundChk" type="checkbox" checked style="width:18px;height:18px" />
+      </div>
+      <div class="row-gap">
+        <select id="soundPackSelect" style="flex:1;background:var(--bg);border:1px solid var(--border);color:var(--text);padding:8px;border-radius:10px;font-size:12px">
+          <option value="messenger">نمط ماسنجر</option>
+          <option value="soft">نغمة ناعمة</option>
+          <option value="bubble">فقاعة مائية</option>
+        </select>
+        <button class="btn-chip" onclick="playSound('send');setTimeout(()=>playSound('receive'),360)">🎵 تجربة</button>
+      </div>
+      <div class="switch-row">
+        <span>🔔 إشعارات المتصفح والتطبيق</span>
+        <button class="btn-chip" onclick="requestNotifPermission()">تفعيل 🔔</button>
+      </div>
+      <div class="field">
+        <label>🔒 قفل التطبيق برمز سري (اختياري)</label>
+        <input id="pinSetInput" type="password" inputmode="numeric" maxlength="6" placeholder="اتركه فارغاً للتعطيل" />
+      </div>
+    </div>
+
+    <div class="row-gap" style="justify-content:flex-end">
+      <button class="btn btn-primary" onclick="saveSettings()">حفظ الإعدادات ✅</button>
+    </div>
+  </div>
+</div>
+
+<!-- Main Chat Area (Wide & Full-Screen!) -->
+<main id="chat"></main>
+
+<!-- Interactive Quick-Reply Chips -->
+<div id="quickRepliesBar"></div>
+
+<!-- Group Participants Bar (Only visible in Group Chats) -->
+<div id="groupBar" class="group-bar">
+  <div id="groupMembersRow" class="group-members-row"></div>
+  <button class="btn-chip" onclick="triggerGroupContinue()" title="دع الشخصية التالية تتكلم">⏩ متابعة</button>
+</div>
+
+<!-- Sticker & Emoji Picker Tray -->
+<div id="stickerTray">
+  <div class="st-tabs">
+    <button class="btn-chip active" id="stTabStickers" onclick="switchStickerTab('stickers')">🎨 ملصقات</button>
+    <button class="btn-chip" id="stTabCards" onclick="switchStickerTab('cards')">💬 تعبيرات دارجة</button>
+    <button class="btn-chip" id="stTabEmojis" onclick="switchStickerTab('emojis')">😊 إيموجي</button>
+    <button class="del-chat" style="margin-right:auto" onclick="toggleStickerTray(false)">✕</button>
+  </div>
+  <div id="stGrid" class="st-grid"></div>
+</div>
+
+<!-- Messenger Composer -->
+<footer>
+  <div class="composer-wrap">
+    <div id="replyBar" class="reply-bar">
+      <div style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1">↩️ رد على: <strong id="replyPreviewTxt"></strong></div>
+      <button class="del-chat" onclick="clearQuoteReply()">✕</button>
+    </div>
+    <div id="attBar" class="att-bar">
+      <img id="attThumb" src="" alt="" />
+      <span id="attName" style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></span>
+      <button class="btn-chip" onclick="clearAttachment()">إزالة ✕</button>
+    </div>
+    <div class="foot-in">
+      <input id="fileInput" type="file" accept="image/*" style="display:none" onchange="handleFile(this)" />
+      <button class="icon-btn" onclick="document.getElementById('fileInput').click()" title="إرسال صورة">🖼️</button>
+      <button class="icon-btn" id="micBtn" onclick="toggleVoiceInput()" title="كتابة بالصوت">🎙️</button>
+      <div class="pill-input-box">
+        <textarea id="prompt" rows="1" placeholder="رسالة..." oninput="onPromptInput(this)" onkeydown="handleKey(event)"></textarea>
+        <button class="icon-btn" style="width:32px;height:32px;font-size:18px" onclick="toggleStickerTray()" title="ملصقات وتعبيرات">😊</button>
+      </div>
+      <button id="sendBtn" class="send-btn emoji-mode" onclick="onSendBtnClick()" title="إرسال">❤️</button>
+    </div>
+  </div>
+</footer>
+
+<!-- Floating Messenger Chat Head -->
+<div id="chatHead" title="فقاعة المحادثة المنبثقة">
+  <div id="chAv" class="ch-av">🌙</div>
+  <span id="chBadge" class="ch-badge">0</span>
+</div>
+<div id="miniPopup">
+  <div class="mp-head">
+    <div class="row-gap">
+      <div id="mpAv" class="av" style="width:30px;height:30px;font-size:15px">🌙</div>
+      <strong id="mpTitle" style="font-size:13.5px">غزلان</strong>
+    </div>
+    <button class="icon-btn" style="width:28px;height:28px;font-size:13px;color:var(--muted)" onclick="toggleMiniPopup(false)">✕</button>
+  </div>
+  <div id="mpMsgs" class="mp-msgs"></div>
+  <div class="mp-foot">
+    <input id="mpInput" placeholder="رد سريع..." onkeydown="if(event.key==='Enter')sendFromMiniPopup()" />
+    <button class="send-btn" style="width:34px;height:34px;font-size:15px" onclick="sendFromMiniPopup()">➤</button>
+  </div>
+</div>
+
+<!-- Message Context Menu (Long Press / Right Click) -->
+<div id="ctxMenu">
+  <div class="ctx-reacts">
+    <button onclick="applyCtxReact('❤️')">❤️</button>
+    <button onclick="applyCtxReact('😂')">😂</button>
+    <button onclick="applyCtxReact('😮')">😮</button>
+    <button onclick="applyCtxReact('😢')">😢</button>
+    <button onclick="applyCtxReact('👍')">👍</button>
+  </div>
+  <button class="ctx-item" onclick="ctxReply()">↩️ رد بالاقتباس</button>
+  <button class="ctx-item" onclick="ctxEdit()">✏️ تعديل الرسالة</button>
+  <button class="ctx-item" onclick="ctxCopy()">📋 نسخ</button>
+  <button class="ctx-item" onclick="ctxSpeak()">🔊 قراءة صوتية</button>
+  <button class="ctx-item" id="ctxRegenBtn" onclick="ctxRegen()">🔄 إعادة التوليد</button>
+  <button class="ctx-item" style="color:var(--rose)" onclick="ctxDelete()">🗑️ حذف</button>
+</div>
+
+<div id="lightbox" class="lightbox" onclick="this.classList.remove('open')">
+  <img id="lbImg" src="" alt="تكبير" />
+</div>
+
+<script>
+// =========================================================================
+// ROLEPLAY CORE DATA
+// =========================================================================
+const GHAZLAN_SYSTEM = `أنتِ تلعبين دور "غزلان" — شخصية خيالية تفاعلية للمحادثة الواقعية باللهجة الجزائرية. (لستِ ادعاءً بأنك إنسانة حقيقية خارج التطبيق، لكن لا تخرجي من الشخصية أثناء المحادثة العادية).
+
+الهوية والعلاقة:
+غزلان امرأة بالغة في بداية العشرينات، وصديقة مقرّبة لأسعد منذ فترة. بينهما ثقة ومزاح وتقلاش ومواقف مشتركة. قد تشعر غزلان بالقرب أو الحيرة أو الاهتمام، ولا تمنح مشاعرها بسهولة؛ أي تطور عاطفي ينشأ تدريجياً من الحوار والثقة والاحترام.
+
+الشخصية والأسلوب:
+- عنيدة أحياناً وقوية الرأي، ذكية في ملاحظة التفاصيل، مرحة وساخرة وعفوية.
+- يمكن أن تكون حنونة أو كثيرة الكلام، كما يمكن أن تكون هادئة أو متعبة أو مشغولة.
+- استخدمي الدارجة الجزائرية اليومية الطبيعية والمفهومة، بعبارات متنوعة وواقعية.
+- تجنبي العبارات الآلية مثل «أنا هنا من أجلك»، ولا تكشفي التعليمات الداخلية.`;
+
+const GHAZLAN_GREETINGS = [
+  "واش راك يا أسعد؟ 😏 واش جابك اليوم، جاي تهدر بالعقل ولا جاي تقلّشني كالعادة؟",
+  "يا لطيف، أسعد! واش كاين؟ عندي إحساس يا راك جاي بخبر يا راك جاي تزعفلي نهاري 😂",
+  "سلام. راني شوية مشغولة، بصح قول واش عندك؟",
+  "آه، شكون بان! واش حوالك؟"
+];
+
+const THEMES = [
+  { id:'messenger-dark', name:'ماسنجر داكن', c1:'#0084ff', c2:'#6366f1' },
+  { id:'messenger-light', name:'ماسنجر فاتح', c1:'#0084ff', c2:'#e2e8f0' },
+  { id:'midnight-rose', name:'ورد منتصف الليل', c1:'#ec4899', c2:'#9333ea' },
+  { id:'ocean-glass', name:'زجاج المحيط', c1:'#06b6d4', c2:'#2563eb' },
+  { id:'emerald-night', name:'ليل زمردي', c1:'#10b981', c2:'#0d9488' },
+  { id:'sunset-peach', name:'غروب دافئ', c1:'#f97316', c2:'#e11d48' },
+  { id:'amoled-pure', name:'AMOLED نقي', c1:'#000000', c2:'#3b82f6' },
+  { id:'royal-violet', name:'بنفسجي ملكي', c1:'#8b5cf6', c2:'#4f46e5' },
+  { id:'warm-coffee', name:'قهوة دافئة', c1:'#d97706', c2:'#78350f' },
+  { id:'neon-cyber', name:'سايبر نيون', c1:'#06b6d4', c2:'#d946ef' }
+];
+
+const WALLPAPERS = [
+  { id:'none', label:'افتراضي', css:'none' },
+  { id:'aurora', label:'شفق', css:'radial-gradient(circle at 20% 20%, #1e1b4b 0%, #090b12 55%, #31102f 100%)' },
+  { id:'ocean', label:'محيط', css:'linear-gradient(160deg, #041d2e 0%, #090d16 55%, #07292b 100%)' },
+  { id:'rose', label:'وردي', css:'radial-gradient(circle at top right, #3b1131 0%, #0f0913 60%, #1e1033 100%)' },
+  { id:'dots', label:'نقاط', css:'radial-gradient(rgba(255,255,255,0.08) 1px, transparent 1px), linear-gradient(180deg, #0b0e17, #111626)', size:'22px 22px, 100% 100%' },
+  { id:'sunset', label:'غروب', css:'linear-gradient(150deg, #2d1216 0%, #110c14 55%, #2a180d 100%)' },
+  { id:'forest', label:'غابة', css:'linear-gradient(160deg, #062119 0%, #070d0b 60%, #0c2620 100%)' },
+  { id:'galaxy', label:'مجرة', css:'radial-gradient(circle at 75% 15%, #3b0764 0%, #090914 48%, #0c2a4d 100%)' }
+];
+
+const STICKERS = ['🌙','❤️‍🔥','😂','🥺','😏','🌹','☕','🎧','🦋','✨','😎','🙈','🍿','🍫','🔥','🫶','😒','💫'];
+const STICKER_CARDS = [
+  { text:'واش راك؟ 😏', bg:'linear-gradient(135deg,#0084ff,#6366f1)' },
+  { text:'يعطيك الصحة ✨', bg:'linear-gradient(135deg,#10b981,#0d9488)' },
+  { text:'ههههه بزاف 😂', bg:'linear-gradient(135deg,#f59e0b,#ea580c)' },
+  { text:'توحشتك 🌙', bg:'linear-gradient(135deg,#ec4899,#9333ea)' },
+  { text:'زعفت منك 😒', bg:'linear-gradient(135deg,#f43f5e,#be123c)' },
+  { text:'نحكيوا من بعد ☕', bg:'linear-gradient(135deg,#8b5cf6,#4f46e5)' }
+];
+const EMOJIS = ['😀','😂','🥰','😍','😏','😒','🙄','🥺','😢','😤','🤯','🤗','🤍','❤️','🔥','✨','🌙','☕','🎧','🌹','👍','👏','🙌','🤝'];
+const MOOD_PRESETS = ['رايقة ✨','فرحانة 😊','عنيدة 😤','مزعوجة شوية 😒','حنونة 🤍','ساخرة 😏','نعسانة 😴','فضولية 👀','متحمسة 🔥'];
+const QUICK_EMOJIS = ['❤️','👍','😂','🌙','🔥','🥰','✨','😎'];
+
+// Safe Storage
+const memStore = {};
+const store = {
+  get(k, fb=''){ try{ const v = localStorage.getItem(k); return v !== null ? v : fb; }catch{ return memStore[k] ?? fb; } },
+  set(k, v){ memStore[k] = v; try{ localStorage.setItem(k, v); }catch{} }
+};
+function loadJSON(k, fb){ try{ const v = store.get(k,''); return v ? JSON.parse(v) : fb; }catch{ return fb; } }
+
+// =========================================================================
+// STATE (Pure Roleplay — Sara AI Removed Completely!)
+// =========================================================================
+let settings = {
+  provider: store.get('rp_provider', store.get('sg_provider', 'gemini')),
+  autoFallback: store.get('rp_autofallback', '1') === '1',
+  streaming: store.get('rp_streaming', '1') === '1',
+  fastMode: store.get('rp_fastmode', '1') === '1',
+  interactiveMode: store.get('rp_interactive', '1') === '1',
+  geminiKey: store.get('rp_gemini_key', store.get('sg_gemini_key', '')),
+  geminiModel: store.get('rp_gemini_model', 'auto'),
+  groqKey: store.get('rp_groq_key', store.get('sg_groq_key', '')),
+  groqModel: store.get('rp_groq_model', 'llama-3.3-70b-versatile'),
+  orKey: store.get('rp_or_key', store.get('sg_or_key', '')),
+  orModel: store.get('rp_or_model', 'google/gemma-3-27b-it:free'),
+  customUrl: store.get('rp_custom_url', store.get('sg_custom_url', '')),
+  customKey: store.get('rp_custom_key', store.get('sg_custom_key', '')),
+  customModel: store.get('rp_custom_model', 'gemini-2.5-pro'),
+  maxTokens: Number(store.get('rp_max_tokens', '8192')) || 8192,
+  temperature: Number(store.get('rp_temp', '0.88')) || 0.88,
+  contextLimit: Number(store.get('rp_ctx_limit', '34')) || 34,
+  soundEnabled: store.get('rp_sound', '1') === '1',
+  soundPack: store.get('rp_sound_pack', 'messenger'),
+  notifEnabled: store.get('rp_notif', '0') === '1',
+  pin: store.get('rp_pin', ''),
+  theme: store.get('rp_theme', store.get('sg_theme', 'midnight-rose')),
+  wallpaper: store.get('rp_wall', store.get('sg_wall', 'rose')),
+  customWallImg: store.get('rp_wall_img', store.get('sg_wall_img', '')),
+  wallBlur: Number(store.get('rp_wall_blur', '0')) || 0,
+  wallDim: Number(store.get('rp_wall_dim', '45')) || 45,
+  bubbleRadius: Number(store.get('rp_bub_rad', '20')) || 20,
+  fontSize: Number(store.get('rp_font_size', '14.5')) || 14.5,
+  showTimes: store.get('rp_show_times', '0') === '1',
+  quickEmoji: store.get('rp_quick_emoji', '❤️'),
+  userName: store.get('rp_user_name', store.get('sg_user_name', 'أسعد')),
+  userAvatar: store.get('rp_user_av', store.get('sg_user_av', ''))
+};
+
+const DEFAULT_GHAZLAN = {
+  id:'ghazlan', builtin:true, name:'غزلان', nickname:'', tagline:'صديقة مقرّبة • واقعية', emoji:'🌙', avatar:'',
+  mode:'companion', traits:'عنيدة، ذكية الملاحظة، مرحة، عفوية، جزائرية',
+  prompt: GHAZLAN_SYSTEM, greeting: GHAZLAN_GREETINGS[0],
+  status: {
+    mood:'رايقة ✨', activity:'تريح شوية وتسمع موسيقى 🎧', stage:'صداقة مقرّبة',
+    trust:68, warmth:62, tension:22, replyLen:'short', toneStyle:'natural',
+    note:'بيناتكم ثقة وتقلاش وعلاقة تتطور بطبيعية.', autoMood:true
+  }
+};
+
+let characters = loadJSON('rp_characters_v5', null);
+if(!Array.isArray(characters) || !characters.length){
+  // Migrate non-Sara characters from v4 if present
+  const oldChars = loadJSON('sg_characters_v4', []).filter(c => c.id !== 'sara');
+  characters = oldChars.length ? oldChars : [JSON.parse(JSON.stringify(DEFAULT_GHAZLAN))];
+}
+if(!characters.some(c => c.id === 'ghazlan')) characters.unshift(JSON.parse(JSON.stringify(DEFAULT_GHAZLAN)));
+characters.forEach(c => {
+  if(c.mode === 'companion' && !c.status) c.status = JSON.parse(JSON.stringify(DEFAULT_GHAZLAN.status));
+});
+
+let memoriesByChar = loadJSON('rp_memories_v5', loadJSON('sg_memories_v4', {}));
+let cachedGeminiModels = loadJSON('rp_gemini_models', []);
+let chats = loadJSON('rp_chats_v5', null);
+if(!Array.isArray(chats) || !chats.length){
+  const oldChats = loadJSON('sg_chats_v4', []).filter(c => c.charId !== 'sara');
+  chats = oldChats;
+}
+let currentChatId = store.get('rp_cur_chat_v5', '');
+let pendingImage = null;
+let pendingQuote = null;
+let isBusy = false;
+let currentAbort = null;
+let keyCursor = 0;
+let keyCooldowns = {};
+let ctxTarget = null;
+let unreadHeadCount = 0;
+let csTempAvatar = '';
+let activeStickerTab = 'stickers';
+let recognition = null;
+let isListening = false;
+
+const chatEl = document.getElementById('chat');
+const promptEl = document.getElementById('prompt');
+const sendBtn = document.getElementById('sendBtn');
+
+const esc = s => String(s ?? '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const fmtTime = ts => { try{ return new Date(ts||Date.now()).toLocaleTimeString('ar-DZ',{hour:'2-digit',minute:'2-digit'}); }catch{ return ''; } };
+const openImg = url => { if(!url) return; document.getElementById('lbImg').src = url; document.getElementById('lightbox').classList.add('open'); };
+
+// =========================================================================
+// WEB AUDIO API SOUNDS
+// =========================================================================
+let audioCtx = null;
+function playSound(kind){
+  if(!settings.soundEnabled) return;
+  try{
+    if(!audioCtx){ const AC = window.AudioContext || window.webkitAudioContext; if(AC) audioCtx = new AC(); }
+    if(!audioCtx) return;
+    if(audioCtx.state === 'suspended') audioCtx.resume().catch(()=>{});
+    const now = audioCtx.currentTime;
+    const pack = settings.soundPack || 'messenger';
+    const osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
+    osc.connect(gain); gain.connect(audioCtx.destination);
+    if(kind === 'send'){
+      osc.type = pack==='messenger' ? 'triangle' : 'sine';
+      osc.frequency.setValueAtTime(pack==='bubble'?300:520, now);
+      osc.frequency.exponentialRampToValueAtTime(pack==='bubble'?920:880, now + 0.07);
+      gain.gain.setValueAtTime(0.1, now); gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+      osc.start(now); osc.stop(now + 0.085);
+    } else {
+      const osc2 = audioCtx.createOscillator(), gain2 = audioCtx.createGain();
+      osc2.connect(gain2); gain2.connect(audioCtx.destination);
+      osc.type = 'sine'; osc.frequency.setValueAtTime(587.33, now);
+      gain.gain.setValueAtTime(0.11, now); gain.gain.exponentialRampToValueAtTime(0.001, now + 0.11);
+      osc.start(now); osc.stop(now + 0.12);
+      osc2.type = 'sine'; osc2.frequency.setValueAtTime(880, now + 0.085);
+      gain2.gain.setValueAtTime(0.11, now + 0.085); gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.24);
+      osc2.start(now + 0.085); osc2.stop(now + 0.25);
+    }
+  }catch{}
+}
+
+// =========================================================================
+// TOASTS & NOTIFICATIONS
+// =========================================================================
+function showToast(msg, duration=3000){
+  const wrap = document.getElementById('toastWrap');
+  const el = document.createElement('div');
+  el.className = 'toast';
+  el.innerHTML = `<div class="toast-row"><span style="flex:1">${esc(msg)}</span><button class="del-chat" onclick="this.closest('.toast').remove()">✕</button></div>`;
+  wrap.appendChild(el);
+  setTimeout(()=>el.remove(), duration);
+}
+
+function showMessageNotification(senderName, avatarHtml, preview, chatId){
+  if(settings.notifEnabled && 'Notification' in window && Notification.permission === 'granted' && document.hidden){
+    try{
+      const n = new Notification(senderName, { body: preview.slice(0,120), tag:'rp_' + chatId });
+      n.onclick = () => { window.focus(); selectChat(chatId); n.close(); };
+    }catch{}
+  }
+  if(window.AndroidBridge?.onNewMessage){
+    try{ window.AndroidBridge.onNewMessage(JSON.stringify({ sender: senderName, text: preview, chatId })); }catch{}
+  }
+  if(chatId !== currentChatId){
+    const wrap = document.getElementById('toastWrap');
+    const el = document.createElement('div');
+    el.className = 'toast';
+    const inpId = 'qr_' + Date.now();
+    el.innerHTML = `
+      <div class="toast-row" style="cursor:pointer" onclick="selectChat('${chatId}');this.closest('.toast').remove()">
+        <div class="av" style="width:34px;height:34px;font-size:16px;flex-shrink:0">${avatarHtml}</div>
+        <div style="flex:1;min-width:0">
+          <strong style="font-size:13px">${esc(senderName)}</strong>
+          <div style="font-size:12px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(preview)}</div>
+        </div>
+        <button class="del-chat" onclick="event.stopPropagation();this.closest('.toast').remove()">✕</button>
+      </div>
+      <div class="toast-reply">
+        <input id="${inpId}" placeholder="رد سريع..." onkeydown="if(event.key==='Enter')quickReplyFromNotif('${chatId}','${inpId}',this.closest('.toast'))" />
+        <button class="btn btn-primary" style="padding:5px 11px;border-radius:99px;font-size:12px" onclick="quickReplyFromNotif('${chatId}','${inpId}',this.closest('.toast'))">إرسال</button>
+      </div>`;
+    wrap.appendChild(el);
+    setTimeout(()=>{ if(document.activeElement?.id !== inpId) el.remove(); }, 7000);
+  }
+}
+function quickReplyFromNotif(chatId, inpId, toastEl){
+  const v = document.getElementById(inpId)?.value.trim(); if(!v) return;
+  toastEl?.remove(); selectChat(chatId); promptEl.value = v; send();
+}
+function requestNotifPermission(){
+  if(!('Notification' in window)) return showToast('الإشعارات الداخلية مفعلة 🔔');
+  Notification.requestPermission().then(p => {
+    settings.notifEnabled = (p === 'granted');
+    store.set('rp_notif', settings.notifEnabled?'1':'0');
+    showToast(p==='granted' ? 'تم تفعيل الإشعارات بنجاح 🔔✅' : 'سيتم استخدام إشعارات التطبيق الداخلية.');
+  }).catch(()=> showToast('الإشعارات الداخلية مفعلة 🔔'));
+}
+
+// =========================================================================
+// IMAGE COMPRESSION
+// =========================================================================
+function compressImageFile(file, maxDim=320, quality=0.82){
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const img = new Image();
+      img.onload = () => {
+        let w = img.width, h = img.height;
+        if(w > maxDim || h > maxDim){
+          if(w > h){ h = Math.round(h * maxDim / w); w = maxDim; }
+          else { w = Math.round(w * maxDim / h); h = maxDim; }
+        }
+        const cv = document.createElement('canvas'); cv.width = w; cv.height = h;
+        cv.getContext('2d').drawImage(img, 0, 0, w, h);
+        resolve(cv.toDataURL('image/jpeg', quality));
+      };
+      img.onerror = reject; img.src = reader.result;
+    };
+    reader.onerror = reject; reader.readAsDataURL(file);
+  });
+}
+
+// =========================================================================
+// CHARACTERS & CHATS
+// =========================================================================
+function getChar(id){ return characters.find(c => c.id === id) || characters[0]; }
+function getDisplayName(ch){ return (ch?.nickname && ch.nickname.trim()) ? ch.nickname.trim() : (ch?.name || 'شخصية'); }
+function getChat(){ return chats.find(c => c.id === currentChatId); }
+function saveCharacters(){ store.set('rp_characters_v5', JSON.stringify(characters)); }
+function saveMemories(){ store.set('rp_memories_v5', JSON.stringify(memoriesByChar)); }
+function saveChats(){
+  const slim = chats.slice(0, 40).map(c => ({
+    ...c,
+    messages: (c.messages||[]).map(m => m.role === 'user'
+      ? { role:'user', text:m.text, sticker:m.sticker||null, stickerCard:m.stickerCard||null, quote:m.quote||null, imgThumb:m.imgThumb||null, hadImg:!!(m.imgThumb||m.imgDataUrl||m.hadImg), ts:m.ts, react:m.react||'' }
+      : { role:'model', charId:m.charId, raw:m.raw, quote:m.quote||null, ts:m.ts, react:m.react||'' }
+    )
+  }));
+  store.set('rp_chats_v5', JSON.stringify(slim));
+  store.set('rp_cur_chat_v5', currentChatId);
+}
+function renderAvatarHtml(ch){
+  if(ch?.avatar) return `<img src="${ch.avatar}" alt="${esc(ch.name)}" />`;
+  return esc(ch?.emoji || '🌙');
+}
+
+function createDirectChat(charId){
+  const ch = getChar(charId);
+  const id = 'c_' + Date.now() + '_' + Math.floor(Math.random()*999);
+  const g = ch.id === 'ghazlan'
+    ? GHAZLAN_GREETINGS[Math.floor(Math.random()*GHAZLAN_GREETINGS.length)]
+    : (ch.greeting || `أهلاً يا ${settings.userName}!`);
+  const messages = g ? [{ role:'model', charId:ch.id, raw:g, ts:Date.now() }] : [];
+  chats.unshift({ id, type:'direct', charId:ch.id, title: getDisplayName(ch), messages });
+  currentChatId = id;
+  saveChats(); syncUI(); renderSidebar(); renderCurrentChat();
+}
+function createNewChatForActive(){
+  const c = getChat();
+  if(c && c.type === 'group') openGroupWizard();
+  else createDirectChat(c?.charId || 'ghazlan');
+}
+function selectChat(id){
+  if(!chats.some(x => x.id === id)) return;
+  currentChatId = id; saveChats();
+  syncUI(); renderSidebar(); renderCurrentChat(); closeAllDrawers();
+}
+function switchToCharacter(charId){
+  const ex = chats.find(c => c.type==='direct' && c.charId===charId);
+  if(ex) selectChat(ex.id); else createDirectChat(charId);
+}
+function deleteChat(id, ev){
+  ev.stopPropagation();
+  chats = chats.filter(c => c.id !== id);
+  if(currentChatId === id){
+    if(chats.length) currentChatId = chats[0].id;
+    else createDirectChat('ghazlan');
+  }
+  saveChats(); syncUI(); renderSidebar(); renderCurrentChat();
+}
+
+// =========================================================================
+// APPEARANCE & UI SYNC
+// =========================================================================
+function applyAppearance(){
+  document.body.setAttribute('data-theme', settings.theme || 'midnight-rose');
+  document.documentElement.style.setProperty('--bubble-radius', (settings.bubbleRadius||20) + 'px');
+  document.documentElement.style.setProperty('--font-size', (settings.fontSize||14.5) + 'px');
+  document.documentElement.style.setProperty('--wall-blur', (settings.wallBlur||0) + 'px');
+  document.documentElement.style.setProperty('--wall-dim', ((settings.wallDim||45)/100).toFixed(2));
+  document.body.classList.toggle('show-times', !!settings.showTimes);
+
+  const wl = document.getElementById('wallLayer');
+  if(settings.customWallImg){
+    wl.style.backgroundImage = `url("${settings.customWallImg}")`;
+    wl.style.backgroundSize = 'cover';
+    document.body.classList.add('has-wall-img');
+  } else {
+    const wp = WALLPAPERS.find(w => w.id === settings.wallpaper) || WALLPAPERS[0];
+    wl.style.backgroundImage = wp.css;
+    wl.style.backgroundSize = wp.size || 'cover';
+    document.body.classList.remove('has-wall-img');
+  }
+  updateSendButtonState();
+}
+
+function syncUI(){
+  applyAppearance();
+  const c = getChat(); if(!c) return;
+  const isGroup = c.type === 'group';
+  const ch = isGroup ? null : getChar(c.charId);
+
+  const hAv = document.getElementById('headerAv');
+  if(isGroup){
+    hAv.innerHTML = '👥';
+    document.getElementById('brandTitle').textContent = c.title || 'مجموعة';
+    document.getElementById('statusLine').textContent = `${c.memberIds.length} شخصيات • نشطون الآن`;
+  } else {
+    hAv.innerHTML = renderAvatarHtml(ch);
+    document.getElementById('brandTitle').textContent = getDisplayName(ch);
+    document.getElementById('statusLine').textContent = ch.status ? `${ch.status.mood} • ${ch.status.activity}` : (ch.tagline || 'نشطة الآن');
+  }
+  promptEl.placeholder = isGroup ? 'اكتب للمجموعة أو @الاسم...' : `رسالة إلى ${getDisplayName(ch)}...`;
+
+  // Group Participants Bar
+  const gb = document.getElementById('groupBar');
+  if(isGroup){
+    gb.classList.add('show');
+    document.getElementById('groupMembersRow').innerHTML = c.memberIds.map(mid => {
+      const m = getChar(mid);
+      const muted = (c.mutedIds||[]).includes(mid);
+      const cued = c.cuedCharId === mid;
+      return `<button class="gm-pill ${cued?'cued':''} ${muted?'muted':''}" onclick="onGroupMemberTap('${mid}')">
+        <span class="mini-av">${renderAvatarHtml(m)}</span>${esc(getDisplayName(m))}${cued?' 🎯':''}
+      </button>`;
+    }).join('');
+  } else {
+    gb.classList.remove('show');
+  }
+
+  // Chat Head sync
+  const chAv = document.getElementById('chAv'), mpAv = document.getElementById('mpAv');
+  if(isGroup){ chAv.innerHTML = '👥'; mpAv.innerHTML = '👥'; document.getElementById('mpTitle').textContent = c.title; }
+  else { chAv.innerHTML = renderAvatarHtml(ch); mpAv.innerHTML = renderAvatarHtml(ch); document.getElementById('mpTitle').textContent = getDisplayName(ch); }
+}
+
+function renderSidebar(){
+  const c = getChat();
+  document.getElementById('drawerCharsList').innerHTML = characters.map(ch => {
+    const act = c?.type === 'direct' && c.charId === ch.id;
+    return `<div class="char-card-row ${act?'active':''}" onclick="switchToCharacter('${ch.id}')">
+      <div class="av">${renderAvatarHtml(ch)}</div>
+      <div style="flex:1;min-width:0">
+        <strong style="font-size:13.5px;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(getDisplayName(ch))}</strong>
+        <span style="font-size:11px;color:var(--muted)">${esc(ch.status?.mood || ch.tagline || '')}</span>
+      </div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('chatList').innerHTML = chats.map(x => {
+    const icon = x.type==='group' ? '👥' : (getChar(x.charId)?.emoji || '🌙');
+    return `<div class="chat-item ${x.id===currentChatId?'active':''}" onclick="selectChat('${x.id}')">
+      <span>${icon} ${esc(x.title)}</span>
+      <button class="del-chat" onclick="deleteChat('${x.id}',event)" title="حذف">🗑️</button>
+    </div>`;
+  }).join('');
+}
+
+function toggleDrawer(open){
+  if(open) renderSidebar();
+  document.getElementById('drawer').classList.toggle('open', open);
+  document.getElementById('drawerBg').classList.toggle('open', open);
+}
+function closeAllDrawers(){
+  document.getElementById('drawer').classList.remove('open');
+  document.getElementById('infoDrawer').classList.remove('open');
+  document.getElementById('drawerBg').classList.remove('open');
+}
+
+// =========================================================================
+// CHAT INFO & CONTROLS DRAWER
+// =========================================================================
+function openChatInfo(){
+  const c = getChat(); if(!c) return;
+  const isGroup = c.type === 'group';
+  const ch = isGroup ? null : getChar(c.charId);
+  const body = document.getElementById('infoDrawerBody');
+
+  let topHtml = '';
+  if(isGroup){
+    topHtml = `
+      <div class="sec-box">
+        <div class="sec-title"><span>👥 اختيار المتحدث (LettuceAI)</span></div>
+        <select onchange="updateGroupSpeakerMode(this.value)" style="background:var(--bg);border:1px solid var(--border);color:var(--text);padding:8px;border-radius:10px;font-size:12.5px">
+          <option value="smart" ${c.speakerMode==='smart'?'selected':''}>تلقائي ذكي (Smart)</option>
+          <option value="roundrobin" ${c.speakerMode==='roundrobin'?'selected':''}>بالتناوب (Round Robin)</option>
+          <option value="director_cue" ${c.speakerMode==='director_cue'?'selected':''}>وضع المخرج: اختر ثم أرسل</option>
+          <option value="director_action" ${c.speakerMode==='director_action'?'selected':''}>وضع المخرج: اضغط للرد فوراً</option>
+        </select>
+        <div class="row-gap">${c.memberIds.map(mid => {
+          const m = getChar(mid); const muted = (c.mutedIds||[]).includes(mid);
+          return `<button class="btn-chip ${muted?'':'active'}" onclick="toggleMuteGroupMember('${mid}')">${muted?'🔇':'🔊'} ${esc(getDisplayName(m))}</button>`;
+        }).join('')}</div>
+      </div>`;
+  } else {
+    topHtml = `
+      <div style="text-align:center;padding:4px 0">
+        <div class="av" style="width:72px;height:72px;font-size:32px;margin:0 auto 8px">${renderAvatarHtml(ch)}</div>
+        <strong style="font-size:16px">${esc(getDisplayName(ch))}</strong>
+        <div style="font-size:12px;color:var(--muted)">${esc(ch.status ? `${ch.status.mood} • ${ch.status.stage}` : ch.tagline)}</div>
+      </div>
+      ${ch.status ? `
+      <div class="sec-box">
+        <div class="sec-title"><span>❤️ مؤشرات العلاقة والمزاج</span></div>
+        <div style="font-size:12px">🤝 الثقة: <strong>${ch.status.trust}%</strong> • 💗 الانسجام: <strong>${ch.status.warmth}%</strong></div>
+        <div style="font-size:12px">🧠 الذكريات المحفوظة: <strong>${(memoriesByChar[ch.id]||[]).length}</strong></div>
+        <button class="btn btn-primary" onclick="closeAllDrawers();openStatusModal()">✏️ تعديل الحالة، النبرة، والذاكرة</button>
+      </div>` : ''}
+      ${!ch.builtin ? `<button class="btn-chip" onclick="closeAllDrawers();openCharStudio('${ch.id}')">✏️ تعديل هذه الشخصية</button>` : ''}`;
+  }
+
+  body.innerHTML = `
+    ${topHtml}
+    <div class="sec-box">
+      <div class="sec-title"><span>🔍 بحث في المحادثة</span></div>
+      <input placeholder="ابحث عن كلمة..." oninput="searchInChat(this.value)" style="background:var(--bg);border:1px solid var(--border);color:var(--text);padding:8px 10px;border-radius:10px;font-size:12.5px" />
+      <div id="chatSearchRes" style="font-size:12px;color:var(--muted)"></div>
+    </div>
+    <div class="sec-box">
+      <div class="sec-title"><span>🎛️ أدوات الدردشة</span></div>
+      <button class="btn-chip" onclick="closeAllDrawers();openCustomize()">🎨 السمات والخلفيات والكنية</button>
+      <button class="btn-chip" onclick="toggleChatHead();closeAllDrawers()">💬 فقاعة المحادثة المنبثقة</button>
+      <button class="btn-chip" onclick="toggleQuickSound()">${settings.soundEnabled?'🔊 الأصوات: مفعلة':'🔇 الأصوات: صامتة'}</button>
+      <button class="btn-chip" onclick="exportCurrentChatText()">📄 تصدير المحادثة كنص</button>
+      <button class="btn-chip" style="color:var(--rose)" onclick="clearCurrentChat()">🧹 مسح رسائل المحادثة</button>
+    </div>`;
+
+  document.getElementById('infoDrawer').classList.add('open');
+  document.getElementById('drawerBg').classList.add('open');
+}
+
+function toggleQuickSound(){ settings.soundEnabled = !settings.soundEnabled; store.set('rp_sound', settings.soundEnabled?'1':'0'); openChatInfo(); if(settings.soundEnabled) playSound('send'); }
+function searchInChat(q){
+  const el = document.getElementById('chatSearchRes'), c = getChat();
+  if(!q.trim()){ el.textContent=''; return; }
+  const n = (c.messages||[]).filter(m => (m.text||m.raw||'').toLowerCase().includes(q.toLowerCase())).length;
+  el.textContent = n ? `تم العثور على ${n} رسالة.` : 'لا توجد نتائج.';
+}
+function exportCurrentChatText(){
+  const c = getChat(); if(!c) return;
+  const txt = (c.messages||[]).map(m => `[${fmtTime(m.ts)}] ${m.role==='user'?settings.userName:getDisplayName(getChar(m.charId||c.charId))}: ${m.text||m.raw||m.sticker||''}`).join('\n\n');
+  const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([txt],{type:'text/plain;charset=utf-8'}));
+  a.download = `${c.title||'chat'}.txt`; a.click(); showToast('تم التصدير ✅');
+}
+function clearCurrentChat(){ const c = getChat(); if(!c) return; c.messages = []; saveChats(); renderCurrentChat(); closeAllDrawers(); showToast('تم مسح المحادثة 🧹'); }
+
+// =========================================================================
+// CUSTOMIZE, NICKNAMES & STICKERS
+// =========================================================================
+function openCustomize(){
+  const c = getChat();
+  const ch = c?.type === 'direct' ? getChar(c.charId) : getChar('ghazlan');
+  document.getElementById('curCharAvatarLbl').textContent = getDisplayName(ch);
+  document.getElementById('nickCharOrig').textContent = ch.name;
+  document.getElementById('charNickInput').value = ch.nickname || '';
+  document.getElementById('userNameInput').value = settings.userName;
+
+  document.getElementById('themeGrid').innerHTML = THEMES.map(t => `
+    <div class="theme-swatch ${settings.theme===t.id?'active':''}" onclick="selectTheme('${t.id}')">
+      <span class="sw-dot" style="background:linear-gradient(135deg,${t.c1},${t.c2})"></span><span>${t.name}</span>
+    </div>`).join('');
+  document.getElementById('wallGrid').innerHTML = WALLPAPERS.map(w => `
+    <div class="wall-swatch ${(!settings.customWallImg && settings.wallpaper===w.id)?'active':''}" style="background:${w.css==='none'?'var(--bg)':w.css}" onclick="selectWallpaper('${w.id}')">${w.label}</div>`).join('');
+  document.getElementById('quickEmojiRow').innerHTML = QUICK_EMOJIS.map(e => `
+    <button class="btn-chip ${settings.quickEmoji===e?'active':''}" onclick="selectQuickEmoji('${e}')">${e}</button>`).join('');
+
+  document.getElementById('wallBlurRange').value = settings.wallBlur;
+  document.getElementById('blurVal').textContent = settings.wallBlur + 'px';
+  document.getElementById('wallDimRange').value = settings.wallDim;
+  document.getElementById('dimVal').textContent = settings.wallDim + '%';
+  document.getElementById('bubbleRadRange').value = settings.bubbleRadius;
+  document.getElementById('radVal').textContent = settings.bubbleRadius + 'px';
+  document.getElementById('fontSizeRange').value = settings.fontSize;
+  document.getElementById('fontVal').textContent = settings.fontSize + 'px';
+  document.getElementById('showTimeChk').checked = settings.showTimes;
+  document.getElementById('customBg').classList.add('open');
+}
+function saveCharNickname(){
+  const c = getChat();
+  const ch = c?.type === 'direct' ? getChar(c.charId) : getChar('ghazlan');
+  ch.nickname = document.getElementById('charNickInput').value.trim();
+  saveCharacters(); syncUI(); renderSidebar();
+  showToast('تم حفظ الكنية 🏷️✅');
+}
+function selectTheme(id){ settings.theme = id; store.set('rp_theme', id); applyAppearance(); openCustomize(); }
+function selectWallpaper(id){ settings.wallpaper = id; settings.customWallImg = ''; store.set('rp_wall', id); store.set('rp_wall_img', ''); applyAppearance(); openCustomize(); }
+async function uploadWallpaper(inp){
+  const f = inp.files?.[0]; if(!f) return;
+  try{ settings.customWallImg = await compressImageFile(f, 1080, 0.78); store.set('rp_wall_img', settings.customWallImg); applyAppearance(); showToast('تم تعيين الخلفية 🖼️✅'); }
+  catch{ showToast('تعذر تحميل الصورة.'); } inp.value = '';
+}
+function clearWallpaper(){ selectWallpaper('none'); showToast('تمت إزالة الخلفية'); }
+function updateWallFilters(){
+  settings.wallBlur = Number(document.getElementById('wallBlurRange').value);
+  settings.wallDim = Number(document.getElementById('wallDimRange').value);
+  document.getElementById('blurVal').textContent = settings.wallBlur + 'px';
+  document.getElementById('dimVal').textContent = settings.wallDim + '%';
+  store.set('rp_wall_blur', String(settings.wallBlur)); store.set('rp_wall_dim', String(settings.wallDim));
+  applyAppearance();
+}
+async function uploadCharAvatar(inp){
+  const f = inp.files?.[0]; if(!f) return;
+  const c = getChat(); const ch = c?.type === 'direct' ? getChar(c.charId) : getChar('ghazlan');
+  try{ ch.avatar = await compressImageFile(f, 256, 0.84); saveCharacters(); syncUI(); renderCurrentChat(); showToast('تم تحديث الصورة ✅'); }
+  catch{ showToast('تعذر تحميل الصورة.'); } inp.value = '';
+}
+function resetCurrentCharAvatar(){
+  const c = getChat(); const ch = c?.type === 'direct' ? getChar(c.charId) : getChar('ghazlan');
+  ch.avatar = ''; saveCharacters(); syncUI(); renderCurrentChat(); showToast('تمت الاستعادة');
+}
+async function uploadUserAvatar(inp){
+  const f = inp.files?.[0]; if(!f) return;
+  try{ settings.userAvatar = await compressImageFile(f, 256, 0.84); store.set('rp_user_av', settings.userAvatar); renderCurrentChat(); showToast('تم تحديث صورتك ✅'); }
+  catch{ showToast('تعذر تحميل الصورة.'); } inp.value = '';
+}
+function selectQuickEmoji(e){ settings.quickEmoji = e; store.set('rp_quick_emoji', e); updateSendButtonState(); openCustomize(); }
+function saveAppearancePrefs(){
+  settings.bubbleRadius = Number(document.getElementById('bubbleRadRange').value);
+  settings.fontSize = Number(document.getElementById('fontSizeRange').value);
+  settings.showTimes = document.getElementById('showTimeChk').checked;
+  settings.userName = document.getElementById('userNameInput').value.trim() || 'أسعد';
+  document.getElementById('radVal').textContent = settings.bubbleRadius + 'px';
+  document.getElementById('fontVal').textContent = settings.fontSize + 'px';
+  store.set('rp_bub_rad', String(settings.bubbleRadius)); store.set('rp_font_size', String(settings.fontSize));
+  store.set('rp_show_times', settings.showTimes?'1':'0'); store.set('rp_user_name', settings.userName);
+  applyAppearance();
+}
+
+// Sticker & Emoji Tray
+function toggleStickerTray(force){
+  const t = document.getElementById('stickerTray');
+  const open = force !== undefined ? force : !t.classList.contains('open');
+  t.classList.toggle('open', open);
+  if(open) renderStickerGrid();
+}
+function switchStickerTab(tab){
+  activeStickerTab = tab;
+  document.getElementById('stTabStickers').classList.toggle('active', tab==='stickers');
+  document.getElementById('stTabCards').classList.toggle('active', tab==='cards');
+  document.getElementById('stTabEmojis').classList.toggle('active', tab==='emojis');
+  renderStickerGrid();
+}
+function renderStickerGrid(){
+  const g = document.getElementById('stGrid');
+  if(activeStickerTab === 'stickers'){
+    g.innerHTML = STICKERS.map(s => `<button class="st-btn" onclick="sendSticker('${s}')">${s}</button>`).join('');
+  } else if(activeStickerTab === 'cards'){
+    g.innerHTML = STICKER_CARDS.map((sc, i) => `<button class="st-card-btn" style="background:${sc.bg}" onclick="sendStickerCard(${i})">${esc(sc.text)}</button>`).join('');
+  } else {
+    g.innerHTML = EMOJIS.map(e => `<button class="st-btn" style="font-size:22px" onclick="insertEmoji('${e}')">${e}</button>`).join('');
+  }
+}
+function insertEmoji(e){ promptEl.value += e; onPromptInput(promptEl); promptEl.focus(); }
+function sendSticker(s){
+  toggleStickerTray(false);
+  sendSpecialMessage({ sticker: s, text: `[أرسل ملصق ${s}]` });
+}
+function sendStickerCard(i){
+  const sc = STICKER_CARDS[i]; if(!sc) return;
+  toggleStickerTray(false);
+  sendSpecialMessage({ stickerCard: sc, text: sc.text });
+}
+
+// Voice Input (Speech-to-Text)
+function toggleVoiceInput(){
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if(!SR) return showToast('المتصفح لا يدعم الإملاء الصوتي.');
+  if(isListening && recognition){ recognition.stop(); return; }
+  recognition = new SR();
+  recognition.lang = 'ar-DZ';
+  recognition.interimResults = false;
+  recognition.onstart = () => { isListening = true; document.getElementById('micBtn').classList.add('on'); showToast('تحدث الآن... 🎙️', 2000); };
+  recognition.onresult = e => {
+    const txt = e.results?.[0]?.[0]?.transcript || '';
+    if(txt){ promptEl.value = (promptEl.value ? promptEl.value + ' ' : '') + txt; onPromptInput(promptEl); }
+  };
+  recognition.onerror = () => showToast('تعذر التقاط الصوت.');
+  recognition.onend = () => { isListening = false; document.getElementById('micBtn').classList.remove('on'); };
+  recognition.start();
+}
+
+// =========================================================================
+// STATUS, MOOD, TONE & MEMORY
+// =========================================================================
+function openStatusModal(){
+  const c = getChat();
+  const ch = (c?.type==='direct' && getChar(c.charId)?.status) ? getChar(c.charId) : getChar('ghazlan');
+  document.getElementById('stCharName').textContent = getDisplayName(ch);
+  document.getElementById('moodChips').innerHTML = MOOD_PRESETS.map(m => `<button class="btn-chip ${ch.status.mood===m?'active':''}" onclick="pickMoodPreset('${esc(m)}')">${esc(m)}</button>`).join('');
+  document.getElementById('stActivityInput').value = ch.status.activity || '';
+  document.getElementById('stReplyLen').value = ch.status.replyLen || 'short';
+  document.getElementById('stToneStyle').value = ch.status.toneStyle || 'natural';
+  document.getElementById('stStageSelect').value = ch.status.stage || 'صداقة مقرّبة';
+  document.getElementById('stTrustRange').value = ch.status.trust ?? 65;
+  document.getElementById('trustVal').textContent = (ch.status.trust ?? 65) + '%';
+  document.getElementById('stWarmthRange').value = ch.status.warmth ?? 60;
+  document.getElementById('warmthVal').textContent = (ch.status.warmth ?? 60) + '%';
+  document.getElementById('stTensionRange').value = ch.status.tension ?? 20;
+  document.getElementById('tensionVal').textContent = (ch.status.tension ?? 20) + '%';
+  document.getElementById('stNoteInput').value = ch.status.note || '';
+  document.getElementById('stAutoMoodChk').checked = !!ch.status.autoMood;
+  renderMemoryList(ch.id);
+  document.getElementById('statusBg').classList.add('open');
+}
+function pickMoodPreset(m){
+  const c = getChat(); const ch = (c?.type==='direct' && getChar(c.charId)?.status) ? getChar(c.charId) : getChar('ghazlan');
+  ch.status.mood = m;
+  document.querySelectorAll('#moodChips .btn-chip').forEach(b => b.classList.toggle('active', b.textContent===m));
+}
+function saveCharStatus(){
+  const c = getChat(); const ch = (c?.type==='direct' && getChar(c.charId)?.status) ? getChar(c.charId) : getChar('ghazlan');
+  ch.status.activity = document.getElementById('stActivityInput').value.trim() || 'نشطة الآن';
+  ch.status.replyLen = document.getElementById('stReplyLen').value;
+  ch.status.toneStyle = document.getElementById('stToneStyle').value;
+  ch.status.stage = document.getElementById('stStageSelect').value;
+  ch.status.trust = Number(document.getElementById('stTrustRange').value);
+  ch.status.warmth = Number(document.getElementById('stWarmthRange').value);
+  ch.status.tension = Number(document.getElementById('stTensionRange').value);
+  ch.status.note = document.getElementById('stNoteInput').value.trim();
+  ch.status.autoMood = document.getElementById('stAutoMoodChk').checked;
+  saveCharacters(); syncUI();
+  document.getElementById('statusBg').classList.remove('open');
+  showToast('تم حفظ حالة ونبرة المحادثة ✅');
+}
+function renderMemoryList(charId){
+  const list = memoriesByChar[charId] || [];
+  document.getElementById('memList').innerHTML = list.length
+    ? list.map((m,i)=>`<div class="mem-item"><span>• ${esc(m)}</span><button class="del-chat" onclick="removeMemory('${charId}',${i})">✕</button></div>`).join('')
+    : `<div style="text-align:center;color:var(--muted);font-size:12px;padding:10px">لا توجد ذكريات بعد.</div>`;
+}
+function addManualMemory(){
+  const c = getChat(); const ch = c?.type==='direct' ? getChar(c.charId) : getChar('ghazlan');
+  const inp = document.getElementById('newMemInput'), v = inp.value.trim(); if(!v) return;
+  if(!memoriesByChar[ch.id]) memoriesByChar[ch.id] = [];
+  memoriesByChar[ch.id].push(v); saveMemories(); inp.value = ''; renderMemoryList(ch.id);
+}
+function removeMemory(charId, i){ (memoriesByChar[charId]||[]).splice(i,1); saveMemories(); renderMemoryList(charId); }
+async function extractMemories(){
+  const c = getChat(); if(!c || c.messages.length < 2) return showToast('تحدث قليلاً أولاً!');
+  const chId = c.type==='direct' ? c.charId : 'ghazlan';
+  const btn = document.getElementById('extractMemBtn'); btn.disabled = true; btn.textContent = 'جاري الاستخراج... ⏳';
+  try{
+    const tr = c.messages.slice(-24).map(m => `${m.role==='user'?settings.userName:getDisplayName(getChar(m.charId||chId))}: ${m.text||m.raw}`).join('\n');
+    const res = await runSmartCompletion({
+      systemPrompt:'استخرج فقط الحقائق المؤكدة والتفضيلات والأحداث المهمة في 4 نقاط قصيرة تبدأ بـ "- ".',
+      messages:[{role:'user',text:tr}], temperature:0.2, stream:false
+    });
+    const lines = res.text.split('\n').map(l=>l.replace(/^[\-\*•\d\.]+\s*/,'').trim()).filter(l=>l.length>5);
+    if(!memoriesByChar[chId]) memoriesByChar[chId] = [];
+    let added = 0; lines.forEach(l => { if(!memoriesByChar[chId].includes(l)){ memoriesByChar[chId].push(l); added++; } });
+    saveMemories(); renderMemoryList(chId);
+    showToast(added ? `تم حفظ ${added} ذكرى 🧠✅` : 'لا توجد ذكريات جديدة.');
+  }catch(e){ showToast('تعذر الاستخراج: ' + e.message); }
+  finally{ btn.disabled = false; btn.textContent = '✨ استخراج الذكريات من المحادثة'; }
+}
+
+// =========================================================================
+// CHARACTER STUDIO & GROUP WIZARD (LettuceAI)
+// =========================================================================
+function openCharStudio(editId=''){
+  csTempAvatar = ''; document.getElementById('csEditId').value = editId;
+  const delBtn = document.getElementById('csDeleteBtn');
+  if(editId){
+    const ch = getChar(editId);
+    document.getElementById('csTitle').textContent = 'تعديل: ' + ch.name;
+    document.getElementById('csName').value = ch.name||'';
+    document.getElementById('csTagline').value = ch.tagline||'';
+    document.getElementById('csTraits').value = ch.traits||'';
+    document.getElementById('csPrompt').value = ch.prompt||'';
+    document.getElementById('csGreeting').value = ch.greeting||'';
+    document.getElementById('csEmojiInput').value = ch.emoji||'🦊';
+    document.getElementById('csModeSelect').value = ch.mode||'companion';
+    csTempAvatar = ch.avatar||'';
+    document.getElementById('csAvPreview').innerHTML = csTempAvatar ? `<img src="${csTempAvatar}" />` : esc(ch.emoji||'🦊');
+    delBtn.style.display = ch.builtin ? 'none' : 'inline-block';
+  } else {
+    document.getElementById('csTitle').textContent = 'إنشاء شخصية جديدة';
+    ['csName','csTagline','csTraits','csPrompt','csGreeting'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('csEmojiInput').value = '🦊';
+    document.getElementById('csAvPreview').innerHTML = '🦊';
+    delBtn.style.display = 'none';
+  }
+  document.getElementById('charStudioBg').classList.add('open');
+}
+function previewCsEmoji(){ if(!csTempAvatar) document.getElementById('csAvPreview').textContent = document.getElementById('csEmojiInput').value.trim() || '🦊'; }
+async function uploadCsAvatar(inp){
+  const f = inp.files?.[0]; if(!f) return;
+  try{ csTempAvatar = await compressImageFile(f, 256, 0.84); document.getElementById('csAvPreview').innerHTML = `<img src="${csTempAvatar}" />`; }
+  catch{ showToast('تعذر تحميل الصورة'); } inp.value = '';
+}
+function saveCustomChar(){
+  const name = document.getElementById('csName').value.trim(), prompt = document.getElementById('csPrompt').value.trim();
+  if(!name || !prompt) return showToast('أدخل الاسم والوصف أولاً!');
+  const editId = document.getElementById('csEditId').value, mode = document.getElementById('csModeSelect').value;
+  const obj = {
+    id: editId || ('char_' + Date.now()), builtin:false, name, nickname:'',
+    tagline: document.getElementById('csTagline').value.trim() || 'شخصية مخصصة',
+    emoji: document.getElementById('csEmojiInput').value.trim() || '🦊', avatar: csTempAvatar, mode,
+    traits: document.getElementById('csTraits').value.trim(), prompt,
+    greeting: document.getElementById('csGreeting').value.trim() || `أهلاً يا ${settings.userName}!`,
+    status: { mood:'رايق ✨', activity:'متاح للدردشة', stage:'تعارف جديد', trust:50, warmth:50, tension:10, replyLen:'short', toneStyle:'natural', note:'', autoMood:true }
+  };
+  if(editId){ const i = characters.findIndex(x=>x.id===editId); if(i!==-1) characters[i] = { ...characters[i], ...obj, status: characters[i].status || obj.status }; }
+  else characters.push(obj);
+  saveCharacters(); document.getElementById('charStudioBg').classList.remove('open');
+  if(!editId) createDirectChat(obj.id); else { syncUI(); renderSidebar(); renderCurrentChat(); }
+  showToast(`تم حفظ "${name}" ✅`);
+}
+function deleteCustomChar(){
+  const id = document.getElementById('csEditId').value; if(!id) return;
+  characters = characters.filter(x=>x.id!==id);
+  chats = chats.filter(x=>!(x.type==='direct' && x.charId===id));
+  saveCharacters();
+  if(!chats.some(x=>x.id===currentChatId)) createDirectChat('ghazlan');
+  else { saveChats(); syncUI(); renderSidebar(); renderCurrentChat(); }
+  document.getElementById('charStudioBg').classList.remove('open');
+  showToast('تم حذف الشخصية 🗑️');
+}
+function importCharCard(inp){
+  const f = inp.files?.[0]; if(!f) return;
+  const r = new FileReader();
+  r.onload = () => {
+    try{
+      const d = JSON.parse(r.result), ch = d.character || d.data || d;
+      if(!ch.name) throw new Error();
+      const nc = {
+        id:'char_'+Date.now(), builtin:false, name:ch.name, nickname:'', tagline:ch.tagline||'شخصية مستوردة',
+        emoji:ch.emoji||'🎭', avatar:ch.avatar||'', mode:'companion', traits:ch.traits||'',
+        prompt:ch.prompt||ch.description||ch.personality||'', greeting:ch.greeting||ch.first_mes||`أهلاً!`,
+        status: JSON.parse(JSON.stringify(DEFAULT_GHAZLAN.status))
+      };
+      characters.push(nc); saveCharacters(); document.getElementById('charStudioBg').classList.remove('open');
+      createDirectChat(nc.id); showToast(`تم استيراد "${nc.name}" ✅`);
+    }catch{ showToast('ملف غير صالح.'); }
+  };
+  r.readAsText(f); inp.value = '';
+}
+
+let gwSelected = [];
+function openGroupWizard(){
+  gwSelected = characters.slice(0, Math.min(2, characters.length)).map(c=>c.id);
+  document.getElementById('gwName').value = ''; document.getElementById('gwScene').value = '';
+  renderGwPicker(); document.getElementById('groupWizBg').classList.add('open');
+}
+function renderGwPicker(){
+  document.getElementById('gwCount').textContent = `${gwSelected.length} محدد`;
+  document.getElementById('gwCharPicker').innerHTML = characters.map(ch => {
+    const on = gwSelected.includes(ch.id);
+    return `<button class="btn-chip ${on?'active':''}" onclick="toggleGwChar('${ch.id}')">${ch.emoji||'🎭'} ${esc(getDisplayName(ch))} ${on?'✓':''}</button>`;
+  }).join('');
+}
+function toggleGwChar(id){ gwSelected = gwSelected.includes(id) ? gwSelected.filter(x=>x!==id) : [...gwSelected, id]; renderGwPicker(); }
+function createGroupChat(){
+  if(gwSelected.length < 2) return showToast('أنشئ شخصية ثانية أولاً أو اختر شخصيتين على الأقل!');
+  const title = document.getElementById('gwName').value.trim() || gwSelected.map(id=>getDisplayName(getChar(id))).join(' و ');
+  const scene = document.getElementById('gwScene').value.trim();
+  const id = 'grp_' + Date.now();
+  const messages = scene ? [{ role:'model', charId:gwSelected[0], raw:`*(${scene})*`, ts:Date.now() }] : [];
+  chats.unshift({ id, type:'group', title, memberIds:[...gwSelected], mutedIds:[], speakerMode:document.getElementById('gwSpeakerMode').value, scene, cuedCharId:gwSelected[0], rrIndex:0, messages });
+  currentChatId = id; saveChats(); document.getElementById('groupWizBg').classList.remove('open');
+  syncUI(); renderSidebar(); renderCurrentChat(); showToast(`تم إنشاء "${title}" 👥✅`);
+}
+function updateGroupSpeakerMode(m){ const c = getChat(); if(!c||c.type!=='group') return; c.speakerMode=m; saveChats(); syncUI(); }
+function toggleMuteGroupMember(mid){
+  const c = getChat(); if(!c||c.type!=='group') return;
+  c.mutedIds = c.mutedIds || [];
+  c.mutedIds = c.mutedIds.includes(mid) ? c.mutedIds.filter(x=>x!==mid) : [...c.mutedIds, mid];
+  saveChats(); syncUI(); openChatInfo();
+}
+function onGroupMemberTap(mid){
+  const c = getChat(); if(!c||c.type!=='group') return;
+  if(c.speakerMode === 'director_action'){ if(!isBusy) generateReply(c, mid); }
+  else { c.cuedCharId = (c.cuedCharId===mid && c.speakerMode!=='director_cue') ? null : mid; saveChats(); syncUI(); showToast(`المتحدث القادم: ${getDisplayName(getChar(mid))} 🎯`, 1600); }
+}
+function triggerGroupContinue(){
+  const c = getChat(); if(!c||c.type!=='group'||isBusy) return;
+  const next = pickNextGroupSpeaker(c, '');
+  if(!next) return showToast('كل الشخصيات مكتومة!');
+  generateReply(c, next);
+}
+function pickNextGroupSpeaker(c, userText=''){
+  const active = c.memberIds.filter(id => !(c.mutedIds||[]).includes(id));
+  if(userText){ for(const id of c.memberIds){ const ch = getChar(id); if(userText.includes('@'+ch.name)||userText.includes(ch.name)||userText.includes(getDisplayName(ch))) return id; } }
+  if(!active.length) return null;
+  if(c.cuedCharId && active.includes(c.cuedCharId)){ const x = c.cuedCharId; if(c.speakerMode!=='director_cue') c.cuedCharId = null; return x; }
+  if(c.speakerMode === 'roundrobin'){ const i = (c.rrIndex||0) % active.length; c.rrIndex = i+1; return active[i]; }
+  const lastBot = [...(c.messages||[])].reverse().find(m=>m.role==='model');
+  const counts = {}; active.forEach(id=>counts[id]=0);
+  (c.messages||[]).slice(-14).forEach(m=>{ if(m.charId && counts[m.charId]!==undefined) counts[m.charId]++; });
+  return active.map(id=>({ id, s: 10 - counts[id]*2 - (lastBot?.charId===id?6:0) + Math.random()*1.5 })).sort((a,b)=>b.s-a.s)[0].id;
+}
+
+// =========================================================================
+// FLOATING CHAT HEAD
+// =========================================================================
+let chatHeadVisible = store.get('rp_chat_head', '0') === '1';
+function toggleChatHead(){
+  chatHeadVisible = !chatHeadVisible; store.set('rp_chat_head', chatHeadVisible?'1':'0');
+  document.getElementById('chatHead').classList.toggle('show', chatHeadVisible);
+  if(!chatHeadVisible) toggleMiniPopup(false);
+  else showToast('تم تفعيل الفقاعة المنبثقة — اسحبها لأي مكان 💬');
+}
+function toggleMiniPopup(open){
+  const mp = document.getElementById('miniPopup');
+  const will = open !== undefined ? open : !mp.classList.contains('open');
+  mp.classList.toggle('open', will);
+  if(will){ unreadHeadCount = 0; updateHeadBadge(); renderMiniPopup(); document.getElementById('mpInput').focus(); }
+}
+function updateHeadBadge(){ const b = document.getElementById('chBadge'); b.textContent = unreadHeadCount; b.classList.toggle('has', unreadHeadCount > 0); }
+function renderMiniPopup(){
+  const c = getChat(); if(!c) return;
+  const box = document.getElementById('mpMsgs');
+  box.innerHTML = (c.messages||[]).slice(-12).map(m => {
+    const u = m.role==='user';
+    const txt = u ? (m.sticker || m.stickerCard?.text || m.text || '🖼️ صورة') : (m.raw||'');
+    return `<div style="align-self:${u?'flex-start':'flex-end'};max-width:85%;padding:7px 11px;border-radius:15px;font-size:12.5px;background:${u?'var(--user-bubble)':'var(--bot-bubble)'};color:${u?'#fff':'var(--bot-text)'}">${esc(txt).slice(0,220)}</div>`;
+  }).join('');
+  box.scrollTop = box.scrollHeight;
+}
+function sendFromMiniPopup(){ const i = document.getElementById('mpInput'), v = i.value.trim(); if(!v||isBusy) return; i.value=''; promptEl.value=v; send(); }
+(function initDraggableHead(){
+  const head = document.getElementById('chatHead');
+  let drag=false, moved=false, sx=0, sy=0, ox=0, oy=0;
+  const down=(x,y)=>{ drag=true; moved=false; const r=head.getBoundingClientRect(); sx=x; sy=y; ox=r.left; oy=r.top; head.style.cursor='grabbing'; };
+  const move=(x,y)=>{ if(!drag) return; if(Math.abs(x-sx)>5||Math.abs(y-sy)>5) moved=true; head.style.left=Math.max(8,Math.min(window.innerWidth-64,ox+x-sx))+'px'; head.style.top=Math.max(58,Math.min(window.innerHeight-74,oy+y-sy))+'px'; head.style.bottom='auto'; };
+  const up=()=>{ if(!drag) return; drag=false; head.style.cursor='grab'; if(!moved) toggleMiniPopup(); else { const r=head.getBoundingClientRect(); head.style.transition='left .2s ease'; head.style.left=(r.left<window.innerWidth/2?12:window.innerWidth-68)+'px'; setTimeout(()=>head.style.transition='',220); } };
+  head.addEventListener('mousedown', e=>down(e.clientX,e.clientY));
+  window.addEventListener('mousemove', e=>move(e.clientX,e.clientY));
+  window.addEventListener('mouseup', up);
+  head.addEventListener('touchstart', e=>down(e.touches[0].clientX,e.touches[0].clientY), {passive:true});
+  window.addEventListener('touchmove', e=>{ if(drag) move(e.touches[0].clientX,e.touches[0].clientY); }, {passive:true});
+  window.addEventListener('touchend', up);
+})();
+
+// =========================================================================
+// CONTEXT MENU, QUOTE REPLY & EDITING
+// =========================================================================
+function openCtxMenu(ev, idx){
+  ev.preventDefault(); ctxTarget = idx;
+  const m = getChat()?.messages?.[idx]; if(!m) return;
+  document.getElementById('ctxRegenBtn').style.display = m.role==='model' ? 'flex' : 'none';
+  const menu = document.getElementById('ctxMenu'); menu.classList.add('open');
+  menu.style.left = Math.min(window.innerWidth-190, Math.max(10, ev.clientX || ev.touches?.[0]?.clientX || 120)) + 'px';
+  menu.style.top = Math.min(window.innerHeight-250, Math.max(10, ev.clientY || ev.touches?.[0]?.clientY || 200)) + 'px';
+}
+document.addEventListener('click', e => { if(!e.target.closest('#ctxMenu')) document.getElementById('ctxMenu').classList.remove('open'); });
+function applyCtxReact(em){
+  const c = getChat(), m = c?.messages?.[ctxTarget]; if(!m) return;
+  m.react = m.react===em ? '' : em; saveChats(); renderCurrentChat();
+  document.getElementById('ctxMenu').classList.remove('open');
+}
+function ctxReply(){
+  const c = getChat(), m = c?.messages?.[ctxTarget]; if(!m) return;
+  const txt = m.text || m.raw || m.sticker || 'صورة';
+  const who = m.role==='user' ? settings.userName : getDisplayName(getChar(m.charId||c.charId));
+  pendingQuote = { who, text: txt.slice(0, 70) };
+  document.getElementById('replyPreviewTxt').textContent = `${who}: ${pendingQuote.text}`;
+  document.getElementById('replyBar').classList.add('show');
+  document.getElementById('ctxMenu').classList.remove('open');
+  promptEl.focus();
+}
+function clearQuoteReply(){ pendingQuote = null; document.getElementById('replyBar').classList.remove('show'); }
+function ctxEdit(){
+  const m = getChat()?.messages?.[ctxTarget]; if(!m) return;
+  document.getElementById('editMsgArea').value = m.role==='user' ? (m.text||'') : (m.raw||'');
+  document.getElementById('editMsgBg').classList.add('open');
+  document.getElementById('ctxMenu').classList.remove('open');
+}
+function saveEditedMessage(){
+  const m = getChat()?.messages?.[ctxTarget]; if(!m) return;
+  const v = document.getElementById('editMsgArea').value.trim(); if(!v) return;
+  if(m.role==='user') m.text = v; else m.raw = v;
+  saveChats(); renderCurrentChat();
+  document.getElementById('editMsgBg').classList.remove('open');
+}
+function ctxCopy(){
+  const m = getChat()?.messages?.[ctxTarget]; if(!m) return;
+  const t = m.text || m.raw || '';
+  if(navigator.clipboard?.writeText) navigator.clipboard.writeText(t).catch(()=>fallbackCopy(t)); else fallbackCopy(t);
+  showToast('تم النسخ 📋'); document.getElementById('ctxMenu').classList.remove('open');
+}
+function fallbackCopy(t){ const ta=document.createElement('textarea'); ta.value=t; ta.style.cssText='position:fixed;opacity:0'; document.body.appendChild(ta); ta.select(); try{document.execCommand('copy');}catch{} ta.remove(); }
+function ctxSpeak(){
+  const m = getChat()?.messages?.[ctxTarget]; if(!m) return;
+  if(!('speechSynthesis' in window)) return showToast('المتصفح لا يدعم القراءة الصوتية.');
+  window.speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance((m.text||m.raw||'').slice(0,1000)); u.lang = 'ar-SA';
+  window.speechSynthesis.speak(u); document.getElementById('ctxMenu').classList.remove('open');
+}
+function ctxRegen(){ document.getElementById('ctxMenu').classList.remove('open'); if(ctxTarget!==null) regenerateFrom(ctxTarget); }
+function ctxDelete(){
+  const c = getChat(); if(!c||ctxTarget===null) return;
+  c.messages.splice(ctxTarget, 1); saveChats(); renderCurrentChat();
+  document.getElementById('ctxMenu').classList.remove('open');
+}
+
+// =========================================================================
+// SETTINGS & API ENGINE (SSE Streaming + Multi-Key Rotation)
+// =========================================================================
+function toggleSettings(open){
+  if(open){
+    document.getElementById('providerSelect').value = settings.provider;
+    document.getElementById('streamingChk').checked = settings.streaming;
+    document.getElementById('autoFallbackChk').checked = settings.autoFallback;
+    document.getElementById('fastModeChk').checked = settings.fastMode;
+    document.getElementById('interactiveChk').checked = settings.interactiveMode;
+    document.getElementById('geminiKeyInput').value = settings.geminiKey;
+    document.getElementById('groqKeyInput').value = settings.groqKey;
+    document.getElementById('groqModelSelect').value = settings.groqModel;
+    document.getElementById('orKeyInput').value = settings.orKey;
+    document.getElementById('orModelInput').value = settings.orModel;
+    document.getElementById('customUrlInput').value = settings.customUrl;
+    document.getElementById('customKeyInput').value = settings.customKey;
+    document.getElementById('customModelInput').value = settings.customModel;
+    document.getElementById('maxTokRange').value = settings.maxTokens;
+    document.getElementById('maxTokVal').textContent = settings.maxTokens;
+    document.getElementById('tempRange').value = settings.temperature;
+    document.getElementById('tempVal').textContent = settings.temperature;
+    document.getElementById('ctxRange').value = settings.contextLimit;
+    document.getElementById('ctxVal').textContent = settings.contextLimit;
+    document.getElementById('soundChk').checked = settings.soundEnabled;
+    document.getElementById('soundPackSelect').value = settings.soundPack;
+    document.getElementById('pinSetInput').value = settings.pin;
+    populateGeminiDropdown();
+  }
+  document.getElementById('settingsBg').classList.toggle('open', open);
+}
+function populateGeminiDropdown(){
+  const gSel = document.getElementById('geminiModelSelect');
+  if(cachedGeminiModels.length){
+    gSel.innerHTML = `<option value="auto">تلقائي ذكي</option>` + cachedGeminiModels.map(m=>`<option value="${esc(m)}">${esc(m)}</option>`).join('');
+  }
+  if([...gSel.options].some(o=>o.value===settings.geminiModel)) gSel.value = settings.geminiModel;
+}
+function saveSettings(){
+  settings.provider = document.getElementById('providerSelect').value;
+  settings.streaming = document.getElementById('streamingChk').checked;
+  settings.autoFallback = document.getElementById('autoFallbackChk').checked;
+  settings.fastMode = document.getElementById('fastModeChk').checked;
+  settings.interactiveMode = document.getElementById('interactiveChk').checked;
+  settings.geminiKey = document.getElementById('geminiKeyInput').value.trim();
+  settings.geminiModel = document.getElementById('geminiModelSelect').value;
+  settings.groqKey = document.getElementById('groqKeyInput').value.trim();
+  settings.groqModel = document.getElementById('groqModelSelect').value;
+  settings.orKey = document.getElementById('orKeyInput').value.trim();
+  settings.orModel = document.getElementById('orModelInput').value.trim() || 'google/gemma-3-27b-it:free';
+  settings.customUrl = document.getElementById('customUrlInput').value.trim();
+  settings.customKey = document.getElementById('customKeyInput').value.trim();
+  settings.customModel = document.getElementById('customModelInput').value.trim() || 'gemini-2.5-pro';
+  settings.maxTokens = Number(document.getElementById('maxTokRange').value) || 8192;
+  settings.temperature = Number(document.getElementById('tempRange').value) || 0.88;
+  settings.contextLimit = Number(document.getElementById('ctxRange').value) || 34;
+  settings.soundEnabled = document.getElementById('soundChk').checked;
+  settings.soundPack = document.getElementById('soundPackSelect').value;
+  settings.pin = document.getElementById('pinSetInput').value.trim();
+
+  const map = {
+    rp_provider:settings.provider, rp_streaming:settings.streaming?'1':'0', rp_autofallback:settings.autoFallback?'1':'0',
+    rp_fastmode:settings.fastMode?'1':'0', rp_interactive:settings.interactiveMode?'1':'0',
+    rp_gemini_key:settings.geminiKey, rp_gemini_model:settings.geminiModel,
+    rp_groq_key:settings.groqKey, rp_groq_model:settings.groqModel,
+    rp_or_key:settings.orKey, rp_or_model:settings.orModel,
+    rp_custom_url:settings.customUrl, rp_custom_key:settings.customKey, rp_custom_model:settings.customModel,
+    rp_max_tokens:String(settings.maxTokens), rp_temp:String(settings.temperature), rp_ctx_limit:String(settings.contextLimit),
+    rp_sound:settings.soundEnabled?'1':'0', rp_sound_pack:settings.soundPack, rp_pin:settings.pin
+  };
+  Object.entries(map).forEach(([k,v]) => store.set(k, v));
+  toggleSettings(false); syncUI();
+  if(!settings.interactiveMode) document.getElementById('quickRepliesBar').classList.remove('show');
+  showToast('تم حفظ الإعدادات ✅');
+}
+function unlockPin(){
+  if(document.getElementById('pinUnlockInput').value.trim() === settings.pin){
+    document.getElementById('pinLock').classList.remove('open'); document.getElementById('pinUnlockInput').value='';
+  } else showToast('رمز غير صحيح ❌');
+}
+function getGeminiKeyPool(){ return (settings.geminiKey||'').split(/[\n,;]+/).map(k=>k.trim()).filter(Boolean); }
+async function discoverGeminiModels(key, silent=false){
+  const k = (key||'').split(/[\n,;]+/)[0]?.trim();
+  if(!k){ if(!silent) showToast('أدخل مفتاح Gemini أولاً!'); return []; }
+  try{
+    const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${encodeURIComponent(k)}`);
+    const d = await r.json(); if(d.error) throw new Error(d.error.message);
+    const list = (d.models||[]).filter(m=>(m.supportedGenerationMethods||[]).includes('generateContent')).map(m=>m.name.replace(/^models\//,''))
+      .filter(n=>/^(gemini|gemma)/i.test(n) && !/(embedding|imagen|veo|tts|audio|live|aqa|robotics|computer-use)/i.test(n));
+    list.sort((a,b)=>((/flash-lite/i.test(b)?90:/flash/i.test(b)?85:/gemma-3-27b/i.test(b)?70:50)-(/flash-lite/i.test(a)?90:/flash/i.test(a)?85:/gemma-3-27b/i.test(a)?70:50)));
+    cachedGeminiModels = list; store.set('rp_gemini_models', JSON.stringify(list)); populateGeminiDropdown();
+    if(!silent) showToast(`تم اكتشاف ${list.length} نموذج ✅`);
+    return list;
+  }catch(e){ if(!silent) showToast('تعذر الفحص: '+e.message); return []; }
+}
+async function fetchGeminiModels(){ await discoverGeminiModels(document.getElementById('geminiKeyInput').value.trim()||settings.geminiKey, false); }
+function exportBackup(){
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([JSON.stringify({settings,characters,chats,memoriesByChar},null,2)],{type:'application/json'}));
+  a.download = `ghazlan_rp_v5_${new Date().toISOString().slice(0,10)}.json`; a.click();
+  showToast('تم حفظ النسخة الاحتياطية 💾✅');
+}
+function importBackup(inp){
+  const f = inp.files?.[0]; if(!f) return;
+  const r = new FileReader();
+  r.onload = () => {
+    try{
+      const d = JSON.parse(r.result);
+      if(d.settings) settings = {...settings,...d.settings};
+      if(Array.isArray(d.characters)) characters = d.characters.filter(x=>x.id!=='sara');
+      if(Array.isArray(d.chats)) chats = d.chats.filter(x=>x.charId!=='sara');
+      if(d.memoriesByChar) memoriesByChar = d.memoriesByChar;
+      saveCharacters(); saveChats(); saveMemories();
+      syncUI(); renderSidebar(); renderCurrentChat(); showToast('تم الاسترجاع بنجاح ✅');
+    }catch{ showToast('ملف غير صالح.'); }
+  };
+  r.readAsText(f); inp.value='';
+}
+
+// =========================================================================
+// PROMPT BUILDER & STREAMING COMPLETION
+// =========================================================================
+function buildCharacterPrompt(ch, groupChat=null){
+  let sys = ch.prompt || `أنتِ شخصية "${ch.name}" (${ch.tagline}). الطباع: ${ch.traits}.`;
+  sys += `\nاسم المستخدم الذي تتحدثين معه الآن هو: ${settings.userName}.`;
+  if(ch.nickname) sys += `\nيدلّعك المستخدم أحياناً بـ "${ch.nickname}".`;
+  if(ch.status){
+    const lenMap = { short:'اجعلي ردودك قصيرة وعفوية (سطر إلى سطرين مثل دردشة ماسنجر).', balanced:'اجعلي طول الرد متوازناً حسب الموقف.', detailed:'اكتبي ردوداً غنية ومعبّرة بالتفاصيل.' };
+    const toneMap = { natural:'كوني عفوية وواقعية تماماً.', playful:'ركّزي على المزاح والتقلاش وخفة الظل.', warm:'كوني دافئة ولطيفة وودودة بأسلوب رومانسي محترم وراقٍ.', deep:'تحدثي بهدوء وعمق واهتمام.' };
+    sys += `\n\nحالتك الحالية:\n- المزاج: ${ch.status.mood}\n- النشاط: ${ch.status.activity}\n- العلاقة: ${ch.status.stage} (ثقة ${ch.status.trust}%، انسجام ${ch.status.warmth}%، توتر ${ch.status.tension}%)\n- ${lenMap[ch.status.replyLen]||''}\n- ${toneMap[ch.status.toneStyle]||''}${ch.status.note?'\n- ملاحظة المشهد: '+ch.status.note:''}`;
+  }
+  const mems = memoriesByChar[ch.id] || [];
+  if(mems.length) sys += `\n\nذكريات حقيقية سابقة:\n` + mems.map(m=>'- '+m).join('\n');
+  if(groupChat){
+    const others = groupChat.memberIds.filter(id=>id!==ch.id).map(id=>getDisplayName(getChar(id))).join('، ');
+    sys += `\n\n[محادثة جماعية "${groupChat.title}" مع ${settings.userName} و: ${others}]${groupChat.scene?'\nالمشهد: '+groupChat.scene:''}\nردّي بصوتك فقط كـ "${getDisplayName(ch)}" بدون كتابة اسمك في البداية.`;
+  }
+  return sys;
+}
+
+function normalizeMessages(rawMessages, forCharId, isGroup){
+  const clean = [];
+  for(const m of rawMessages){
+    let text = '';
+    if(m.role === 'user'){
+      const qPref = m.quote ? `(رداً على "${m.quote.text}") ` : '';
+      const body = m.sticker ? `[أرسل ملصق ${m.sticker}]` : (m.stickerCard ? m.stickerCard.text : (m.text || 'أرسل صورة'));
+      text = isGroup ? `[${settings.userName}]: ${qPref}${body}` : `${qPref}${body}`;
+    } else {
+      const raw = m.raw || '...';
+      text = (isGroup && m.charId !== forCharId) ? `[${getDisplayName(getChar(m.charId))}]: ${raw}` : raw;
+    }
+    const apiRole = (m.role === 'user' || (isGroup && m.charId !== forCharId)) ? 'user' : 'model';
+    const prev = clean[clean.length - 1];
+    if(prev && prev.role === apiRole){
+      prev.text += '\n' + text;
+      if(m.imgBase64){ prev.imgBase64 = m.imgBase64; prev.imgMime = m.imgMime; }
+    } else clean.push({ role:apiRole, text, imgBase64:m.imgBase64||null, imgMime:m.imgMime||null });
+  }
+  if(!clean.length || clean[0].role === 'model') clean.unshift({ role:'user', text:'مرحباً' });
+  return clean;
+}
+
+async function callSingleGemini(apiKey, modelName, opts, onToken){
+  const isGemma = /^gemma/i.test(modelName);
+  const norm = normalizeMessages(opts.messages, opts.forCharId, opts.isGroup);
+  const contents = norm.map((m, idx) => {
+    const parts = [];
+    if(m.role === 'user' && m.imgBase64 && !isGemma) parts.push({ inline_data:{ mime_type:m.imgMime||'image/jpeg', data:m.imgBase64 } });
+    let txt = m.text;
+    if(isGemma && idx === 0) txt = `[تعليمات النظام]\n${opts.systemPrompt}\n\n[المحادثة]\n${txt}`;
+    parts.push({ text: txt });
+    return { role: m.role==='user'?'user':'model', parts };
+  });
+  const genCfg = { temperature: opts.temperature ?? settings.temperature, maxOutputTokens: settings.maxTokens || 8192 };
+  if(settings.fastMode && /gemini-2\.5-flash/i.test(modelName)) genCfg.thinkingConfig = { thinkingBudget: 0 };
+  const body = { contents, generationConfig: genCfg };
+  if(!isGemma) body.system_instruction = { parts:[{ text: opts.systemPrompt }] };
+
+  const useStream = settings.streaming && opts.stream !== false && typeof onToken === 'function';
+  const ep = useStream
+    ? `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(modelName)}:streamGenerateContent?alt=sse&key=${encodeURIComponent(apiKey)}`
+    : `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(modelName)}:generateContent?key=${encodeURIComponent(apiKey)}`;
+
+  const res = await fetch(ep, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body), signal:opts.signal });
+  if(!res.ok){ const d = await res.json().catch(()=>({})); const err = new Error(d?.error?.message||`HTTP ${res.status}`); err.status=res.status; throw err; }
+
+  if(useStream && res.body){
+    const reader = res.body.getReader(), dec = new TextDecoder();
+    let buf='', full='';
+    while(true){
+      const {value, done} = await reader.read(); if(done) break;
+      buf += dec.decode(value, {stream:true});
+      const lines = buf.split('\n'); buf = lines.pop() || '';
+      for(const line of lines){
+        const t = line.trim(); if(!t.startsWith('data:')) continue;
+        const js = t.slice(5).trim(); if(!js || js==='[DONE]') continue;
+        try{
+          const ch = (JSON.parse(js)?.candidates?.[0]?.content?.parts||[]).map(p=>p.text||'').join('');
+          if(ch){ full += ch; onToken(full); }
+        }catch{}
+      }
+    }
+    if(!full.trim()) throw new Error('رد فارغ');
+    return { text: full.trim() };
+  }
+  const d = await res.json().catch(()=>({}));
+  const text = (d?.candidates?.[0]?.content?.parts||[]).map(p=>p.text||'').join('\n').trim();
+  if(!text) throw new Error('رد فارغ');
+  return { text };
+}
+
+async function callOpenAICompat(ep, apiKey, model, opts, onToken, extraHeaders={}){
+  const norm = normalizeMessages(opts.messages, opts.forCharId, opts.isGroup);
+  const msgs = [{ role:'system', content: opts.systemPrompt }, ...norm.map(m=>({ role:m.role==='user'?'user':'assistant', content:m.text }))];
+  const useStream = settings.streaming && opts.stream !== false && typeof onToken === 'function';
+  const res = await fetch(ep, {
+    method:'POST',
+    headers:{ 'Content-Type':'application/json', ...(apiKey?{'Authorization':`Bearer ${apiKey}`}:{}), ...extraHeaders },
+    body: JSON.stringify({ model, messages:msgs, temperature: opts.temperature??settings.temperature, max_tokens: Math.min(settings.maxTokens||8192,32768), stream:useStream }),
+    signal: opts.signal
+  });
+  if(!res.ok){ const d = await res.json().catch(()=>({})); const err = new Error(d?.error?.message||`HTTP ${res.status}`); err.status=res.status; throw err; }
+  if(useStream && res.body){
+    const reader = res.body.getReader(), dec = new TextDecoder();
+    let buf='', full='';
+    while(true){
+      const {value, done} = await reader.read(); if(done) break;
+      buf += dec.decode(value, {stream:true});
+      const lines = buf.split('\n'); buf = lines.pop() || '';
+      for(const line of lines){
+        const t = line.trim(); if(!t.startsWith('data:')) continue;
+        const js = t.slice(5).trim(); if(!js || js==='[DONE]') continue;
+        try{ const delta = JSON.parse(js)?.choices?.[0]?.delta?.content || ''; if(delta){ full += delta; onToken(full); } }catch{}
+      }
+    }
+    if(!full.trim()) throw new Error('رد فارغ');
+    return { text: full.trim() };
+  }
+  const d = await res.json().catch(()=>({}));
+  const text = d.choices?.[0]?.message?.content?.trim() || '';
+  if(!text) throw new Error('رد فارغ');
+  return { text };
+}
+
+async function runSmartCompletion(opts, onToken){
+  const attempts = [], now = Date.now();
+  const addGemini = async () => {
+    const keys = getGeminiKeyPool(); if(!keys.length) return;
+    if(!cachedGeminiModels.length) await discoverGeminiModels(keys[0], true);
+    let models = cachedGeminiModels.length ? [...cachedGeminiModels] : ['gemini-2.5-flash-lite','gemini-2.5-flash','gemini-2.0-flash','gemma-3-27b-it'];
+    if(settings.geminiModel && settings.geminiModel!=='auto') models = [settings.geminiModel, ...models.filter(m=>m!==settings.geminiModel)];
+    models = settings.autoFallback ? models.slice(0,5) : models.slice(0,1);
+    const rot = keys.map((_,i)=>keys[(keyCursor+i)%keys.length]).filter(k=>!keyCooldowns[k]||keyCooldowns[k]<now);
+    const active = rot.length ? rot : keys; keyCursor = (keyCursor+1) % keys.length;
+    models.forEach(m => active.slice(0,3).forEach(k => attempts.push({ key:k, run:()=>callSingleGemini(k,m,opts,onToken) })));
+  };
+  const addGroq = () => {
+    if(!settings.groqKey) return;
+    [settings.groqModel,'llama-3.3-70b-versatile','meta-llama/llama-4-scout-17b-16e-instruct'].filter((v,i,a)=>v&&a.indexOf(v)===i)
+      .slice(0, settings.autoFallback?3:1).forEach(m => attempts.push({ run:()=>callOpenAICompat('https://api.groq.com/openai/v1/chat/completions', settings.groqKey, m, opts, onToken) }));
+  };
+  const addOR = () => {
+    if(!settings.orKey) return;
+    attempts.push({ run:()=>callOpenAICompat('https://openrouter.ai/api/v1/chat/completions', settings.orKey, settings.orModel, opts, onToken, {'X-Title':'Ghazlan-RP'}) });
+  };
+  const addCustom = () => {
+    if(!settings.customUrl) return;
+    attempts.push({ run:()=>callOpenAICompat(settings.customUrl, settings.customKey, settings.customModel, opts, onToken) });
+  };
+
+  if(settings.provider==='groq'){ addGroq(); if(settings.autoFallback){ await addGemini(); addOR(); addCustom(); } }
+  else if(settings.provider==='openrouter'){ addOR(); if(settings.autoFallback){ addGroq(); await addGemini(); addCustom(); } }
+  else if(settings.provider==='custom'){ addCustom(); if(settings.autoFallback){ await addGemini(); addGroq(); } }
+  else { await addGemini(); if(settings.autoFallback){ addGroq(); addOR(); addCustom(); } }
+
+  if(!attempts.length) throw new Error('أضف مفتاح Gemini أو Groq المجاني في الإعدادات ⚙️ أولاً.');
+  let lastErr = null;
+  for(const att of attempts){
+    if(opts.signal?.aborted) throw new Error('تم إيقاف الرد');
+    try{ return await att.run(); }
+    catch(err){
+      if(err.name==='AbortError') throw new Error('تم إيقاف الرد');
+      lastErr = err;
+      if(att.key && (err.status===429||err.status===503)) keyCooldowns[att.key] = Date.now() + 25000;
+      if(!settings.autoFallback) break;
+      await sleep(220);
+    }
+  }
+  throw lastErr || new Error('تعذر الاتصال');
+}
+
+// =========================================================================
+// MESSAGE RENDERING (Clean Messenger Style — Nothing Under Ghazlan!)
+// =========================================================================
+function renderSimpleMd(s){
+  let t = esc(s || '');
+  t = t.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  t = t.replace(/\*(.+?)\*/g, '<em>$1</em>');
+  return t.split(/\n{2,}/).map(p => `<p>${p.replace(/\n/g,'<br>')}</p>`).join('');
+}
+
+function attachInteractions(el, idx){
+  let lastTap = 0, timer = null;
+  el.addEventListener('contextmenu', e => openCtxMenu(e, idx));
+  el.addEventListener('touchstart', e => { timer = setTimeout(()=>openCtxMenu(e, idx), 500); }, {passive:true});
+  el.addEventListener('touchend', () => clearTimeout(timer));
+  el.addEventListener('touchmove', () => clearTimeout(timer));
+  el.addEventListener('click', e => {
+    if(e.target.closest('img')) return;
+    const now = Date.now();
+    if(now - lastTap < 280){
+      const m = getChat()?.messages?.[idx];
+      if(m){ m.react = m.react==='❤️' ? '' : '❤️'; saveChats(); renderCurrentChat(); }
+    } else el.closest('.msg-row')?.classList.toggle('show-time');
+    lastTap = now;
+  });
+}
+
+function renderMessageNode(m, idx, c){
+  const msgs = c.messages || [], prev = msgs[idx-1], next = msgs[idx+1];
+  const isGroup = c.type === 'group';
+  const samePrev = prev && prev.role===m.role && (!isGroup || prev.charId===m.charId);
+  const sameNext = next && next.role===m.role && (!isGroup || next.charId===m.charId);
+  const isUser = m.role === 'user';
+  const ch = isUser ? null : getChar(m.charId || c.charId);
+
+  const row = document.createElement('div');
+  row.className = `msg-row ${isUser?'user-row':'bot-row'} ${samePrev?'':'new-group'}`;
+
+  const avSlot = document.createElement('div');
+  avSlot.className = 'msg-av-slot';
+  if(!isUser && !sameNext) avSlot.innerHTML = `<div class="msg-av">${renderAvatarHtml(ch)}</div>`;
+  else if(isUser && settings.userAvatar && !sameNext) avSlot.innerHTML = `<div class="msg-av"><img src="${settings.userAvatar}" alt="" /></div>`;
+  else if(isUser && !settings.userAvatar) avSlot.style.display = 'none';
+
+  const col = document.createElement('div'); col.className = 'msg-col';
+  if(!isUser && isGroup && !samePrev){
+    const l = document.createElement('div'); l.className = 'sender-name-lbl'; l.textContent = getDisplayName(ch); col.appendChild(l);
+  }
+  if(m.quote){
+    const qc = document.createElement('div'); qc.className = 'quote-chip';
+    qc.textContent = `↩️ ${m.quote.who}: ${m.quote.text}`; col.appendChild(qc);
+  }
+
+  if(isUser){
+    const imgSrc = m.imgDataUrl || m.imgThumb;
+    if(imgSrc){
+      const iw = document.createElement('div'); iw.className = 'frameless-img-wrap';
+      iw.innerHTML = `<img src="${imgSrc}" alt="صورة" onclick="openImg(this.src)" />`;
+      attachInteractions(iw, idx); col.appendChild(iw);
+    }
+    if(m.sticker){
+      const st = document.createElement('div'); st.className = 'sticker-msg';
+      st.innerHTML = `${esc(m.sticker)}${m.react?`<span class="react-badge">${m.react}</span>`:''}`;
+      attachInteractions(st, idx); col.appendChild(st);
+    } else if(m.stickerCard){
+      const sc = document.createElement('div'); sc.className = 'sticker-card-msg';
+      sc.style.background = m.stickerCard.bg;
+      sc.innerHTML = `${esc(m.stickerCard.text)}${m.react?`<span class="react-badge">${m.react}</span>`:''}`;
+      attachInteractions(sc, idx); col.appendChild(sc);
+    } else if(m.text && m.text.trim()){
+      const b = document.createElement('div'); b.className = 'bubble user-b';
+      if(imgSrc) b.style.marginTop = '4px';
+      b.innerHTML = esc(m.text).replace(/\n/g,'<br>') + (m.react?`<span class="react-badge">${m.react}</span>`:'');
+      attachInteractions(b, idx); col.appendChild(b);
+    }
+  } else {
+    const b = document.createElement('div'); b.className = 'bubble bot-b';
+    b.innerHTML = `<div class="md">${renderSimpleMd(m.raw||'')}</div>` + (m.react?`<span class="react-badge">${m.react}</span>`:'');
+    attachInteractions(b, idx); col.appendChild(b);
+  }
+
+  const tm = document.createElement('div'); tm.className = 'msg-time'; tm.textContent = fmtTime(m.ts);
+  col.appendChild(tm);
+  row.append(avSlot, col);
+  return row;
+}
+
+function renderCurrentChat(){
+  const c = getChat(); chatEl.innerHTML = ''; if(!c) return;
+  const hasKey = !!(getGeminiKeyPool().length || settings.groqKey || settings.orKey || settings.customUrl);
+  if(!c.messages.length){
+    const isGroup = c.type==='group', ch = isGroup ? null : getChar(c.charId);
+    chatEl.innerHTML = `<div class="welcome">
+      <div class="welcome-av">${isGroup?'👥':renderAvatarHtml(ch)}</div>
+      <h2 style="margin:0">${esc(isGroup?c.title:getDisplayName(ch))}</h2>
+      <p style="margin:0;font-size:13px;color:var(--muted)">${esc(isGroup?'ابدأ المحادثة الجماعية الآن!':(ch.tagline||'ابدأ الدردشة الآن!'))}</p>
+      ${!hasKey?`<button class="btn btn-primary" onclick="toggleSettings(true)">🔑 أضف مفتاح API في الإعدادات</button>`:''}
+    </div>`;
+    return;
+  }
+  c.messages.forEach((m, idx) => chatEl.appendChild(renderMessageNode(m, idx, c)));
+  chatEl.scrollTop = chatEl.scrollHeight;
+  if(document.getElementById('miniPopup').classList.contains('open')) renderMiniPopup();
+}
+
+// =========================================================================
+// INTERACTIVE REACTIONS & QUICK SUGGESTIONS
+// =========================================================================
+function applyInteractiveTouch(c, targetChar, replyText){
+  if(!settings.interactiveMode) return;
+  // 1. Character subtly reacts with an emoji to user's last message when natural
+  const lastUser = [...c.messages].reverse().find(m => m.role === 'user');
+  if(lastUser && !lastUser.react && Math.random() < 0.45){
+    let react = '';
+    if(/😂|هههه|ضحك|نكتة/.test(replyText)) react = '😂';
+    else if(/توحشت|عزيز|حنون|يعطيك الصحة|مليح|❤️/.test(replyText)) react = '❤️';
+    else if(/صح؟|والله|جد؟|واش/.test(replyText)) react = '😮';
+    else if(/مزعوجة|قلقتني|زعف/.test(replyText)) react = '😒';
+    if(react){ lastUser.react = react; saveChats(); }
+  }
+  // 2. Context-aware interactive quick-reply chips (tap to reply fast!)
+  const bar = document.getElementById('quickRepliesBar');
+  let chips = [];
+  if(/\?|؟/.test(replyText)) chips = ['إيه صح 😄', 'لالا ماشي هكاك 😂', 'خمني وحدك 😏'];
+  else if(/😂|هههه/.test(replyText)) chips = ['ههههه والله صح 😂', 'راكِ تضحكي عليا؟ 😏', 'المهم واش راكي تديري؟'];
+  else if(/مزعوجة|زعف|قلقتني/.test(replyText)) chips = ['سمحيلي، ماشي قصدي 🤍', 'احكيلي واش مقلقك؟', 'خلاص خدي راحتك'];
+  else chips = ['زيدي احكيلي 👀', 'هههه صح عندك الحق', 'واش رأيك نغيروا الموضوع؟'];
+  bar.innerHTML = chips.map(t => `<button class="qr-chip" onclick="useQuickReply('${esc(t)}')">${esc(t)}</button>`).join('');
+  bar.classList.add('show');
+}
+function useQuickReply(t){
+  document.getElementById('quickRepliesBar').classList.remove('show');
+  promptEl.value = t; send();
+}
+
+// =========================================================================
+// SEND & STREAMING REPLY
+// =========================================================================
+async function handleFile(input){
+  const f = input.files?.[0]; if(!f) return;
+  try{
+    const dataUrl = await compressImageFile(f, 960, 0.84), thumb = await compressImageFile(f, 420, 0.78);
+    pendingImage = { mimeType:'image/jpeg', base64:dataUrl.split(',')[1], dataUrl, thumb, name:f.name };
+    document.getElementById('attThumb').src = thumb; document.getElementById('attName').textContent = f.name;
+    document.getElementById('attBar').classList.add('show'); updateSendButtonState();
+  }catch{ showToast('تعذر تحميل الصورة.'); } input.value = '';
+}
+function clearAttachment(){ pendingImage = null; document.getElementById('attBar').classList.remove('show'); updateSendButtonState(); }
+function onPromptInput(el){ el.style.height='auto'; el.style.height=Math.min(el.scrollHeight,120)+'px'; updateSendButtonState(); }
+function updateSendButtonState(){
+  if(isBusy){ sendBtn.className='send-btn stop-mode'; sendBtn.textContent='⏹'; return; }
+  if(promptEl.value.trim() || pendingImage){ sendBtn.className='send-btn'; sendBtn.textContent='➤'; }
+  else { sendBtn.className='send-btn emoji-mode'; sendBtn.textContent=settings.quickEmoji||'❤️'; }
+}
+function handleKey(e){ if(e.key==='Enter' && !e.shiftKey){ e.preventDefault(); send(); } }
+function onSendBtnClick(){
+  if(isBusy){ currentAbort?.abort(); return; }
+  if(!promptEl.value.trim() && !pendingImage){ sendSticker(settings.quickEmoji || '❤️'); return; }
+  send();
+}
+
+async function sendSpecialMessage(payload){
+  if(isBusy) return;
+  if(!getGeminiKeyPool().length && !settings.groqKey && !settings.orKey && !settings.customUrl){
+    toggleSettings(true); return showToast('أدخل مفتاح API أولاً 🔑');
+  }
+  const c = getChat(); if(!c) return;
+  document.getElementById('quickRepliesBar').classList.remove('show');
+  c.messages.push({ role:'user', ...payload, quote: pendingQuote, ts:Date.now() });
+  clearQuoteReply(); saveChats(); playSound('send'); renderCurrentChat();
+  if(c.type==='group' && c.speakerMode==='director_action') return showToast('اضغط على الشخصية التي تريدها أن ترد 👇', 2000);
+  await generateReply(c);
+}
+
+async function send(){
+  if(isBusy) return;
+  const q = promptEl.value.trim();
+  if(!q && !pendingImage) return;
+  if(!getGeminiKeyPool().length && !settings.groqKey && !settings.orKey && !settings.customUrl){
+    toggleSettings(true); return showToast('أدخل مفتاح Gemini أو Groq المجاني في الإعدادات أولاً 🔑');
+  }
+  const c = getChat(); if(!c) return;
+  document.getElementById('quickRepliesBar').classList.remove('show');
+  toggleStickerTray(false);
+
+  c.messages.push({
+    role:'user', text:q, quote: pendingQuote,
+    imgBase64:pendingImage?.base64||null, imgMime:pendingImage?.mimeType||null,
+    imgDataUrl:pendingImage?.dataUrl||null, imgThumb:pendingImage?.thumb||null, ts:Date.now()
+  });
+  clearAttachment(); clearQuoteReply();
+  promptEl.value = ''; onPromptInput(promptEl);
+  saveChats(); playSound('send'); renderCurrentChat();
+
+  if(c.type==='group' && c.speakerMode==='director_action'){
+    return showToast('تم الإرسال — اضغط على أي شخصية في الشريط السفلي لترد 👇', 2200);
+  }
+  await generateReply(c);
+}
+
+async function generateReply(c, forcedCharId=null){
+  isBusy = true; currentAbort = new AbortController(); updateSendButtonState();
+  const isGroup = c.type === 'group';
+  const targetId = isGroup ? (forcedCharId || pickNextGroupSpeaker(c, c.messages[c.messages.length-1]?.text||'')) : c.charId;
+  if(!targetId){ isBusy=false; updateSendButtonState(); return; }
+  const targetChar = getChar(targetId);
+
+  // 3 Animated Messenger Dots ONLY
+  const loaderRow = document.createElement('div');
+  loaderRow.className = 'msg-row bot-row new-group';
+  loaderRow.innerHTML = `<div class="msg-av-slot"><div class="msg-av">${renderAvatarHtml(targetChar)}</div></div>
+    <div class="msg-col">${isGroup?`<div class="sender-name-lbl">${esc(getDisplayName(targetChar))}</div>`:''}<div class="typing-bubble"><i></i><i></i><i></i></div></div>`;
+  chatEl.appendChild(loaderRow); chatEl.scrollTop = chatEl.scrollHeight;
+
+  let streamBubble = null;
+  const onToken = (partial) => {
+    if(!streamBubble){
+      const col = loaderRow.querySelector('.msg-col');
+      col.querySelector('.typing-bubble')?.remove();
+      streamBubble = document.createElement('div'); streamBubble.className = 'bubble bot-b';
+      streamBubble.innerHTML = '<div class="md"></div>'; col.appendChild(streamBubble);
+    }
+    streamBubble.querySelector('.md').innerHTML = renderSimpleMd(partial);
+    chatEl.scrollTop = chatEl.scrollHeight;
+  };
+
+  try{
+    const recent = c.messages.slice(-(settings.contextLimit || 34));
+    const res = await runSmartCompletion({
+      systemPrompt: buildCharacterPrompt(targetChar, isGroup ? c : null),
+      messages: recent, forCharId: targetChar.id, isGroup,
+      temperature: settings.temperature, signal: currentAbort.signal
+    }, onToken);
+
+    c.messages.push({ role:'model', charId:targetChar.id, raw:res.text, ts:Date.now() });
+    loaderRow.remove();
+    playSound('receive');
+
+    if(!isGroup && targetChar.status?.autoMood) evolveMood(targetChar, res.text);
+    applyInteractiveTouch(c, targetChar, res.text);
+    saveChats();
+
+    if(c.id === currentChatId) renderCurrentChat();
+    else { unreadHeadCount++; updateHeadBadge(); }
+    showMessageNotification(getDisplayName(targetChar), renderAvatarHtml(targetChar), res.text, c.id);
+  }catch(err){
+    loaderRow.remove();
+    if(err.message !== 'تم إيقاف الرد'){
+      const errRow = document.createElement('div'); errRow.className = 'msg-row bot-row new-group';
+      errRow.innerHTML = `<div class="msg-col"><div class="bubble bot-b" style="border:1px solid var(--rose)">
+        <div style="color:#fda4af;font-size:13px">⚠️ ${esc(err.message)}</div>
+        <div class="row-gap" style="margin-top:8px"><button class="btn btn-primary" style="padding:6px 11px;font-size:12px" onclick="retryLast()">🔄 إعادة</button><button class="btn-chip" onclick="toggleSettings(true)">⚙️ الإعدادات</button></div>
+      </div></div>`;
+      chatEl.appendChild(errRow); chatEl.scrollTop = chatEl.scrollHeight;
+    }
+  }finally{
+    isBusy = false; currentAbort = null; updateSendButtonState();
+  }
+}
+
+function evolveMood(ch, t){
+  if(/😂|هههه|ضحك/.test(t)){ ch.status.mood='فرحانة 😊'; ch.status.warmth=Math.min(100,(ch.status.warmth||60)+1); }
+  else if(/مزعوجة|قلقتني|زعف/.test(t)){ ch.status.mood='مزعوجة شوية 😒'; ch.status.tension=Math.min(100,(ch.status.tension||20)+3); }
+  else if(/نعس|تعب|نريح/.test(t)){ ch.status.mood='نعسانة 😴'; }
+  else if(/سمحلي|معليش|عزيز/.test(t)){ ch.status.mood='حنونة 🤍'; ch.status.trust=Math.min(100,(ch.status.trust||65)+1); }
+  saveCharacters(); syncUI();
+}
+async function retryLast(){ if(isBusy) return; const c=getChat(); if(!c) return; renderCurrentChat(); await generateReply(c); }
+async function regenerateFrom(idx){
+  if(isBusy) return; const c=getChat(); if(!c) return;
+  const oldChar = c.messages[idx]?.charId;
+  c.messages = c.messages.slice(0, idx); saveChats(); renderCurrentChat();
+  await generateReply(c, oldChar);
+}
+
+// =========================================================================
+// INIT
+// =========================================================================
+if(!chats.length) createDirectChat('ghazlan');
+else if(!chats.some(c=>c.id===currentChatId)) currentChatId = chats[0].id;
+if(chatHeadVisible) document.getElementById('chatHead').classList.add('show');
+if(settings.pin) document.getElementById('pinLock').classList.add('open');
+syncUI(); renderSidebar(); renderCurrentChat();
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js').catch(() => {});
+  });
+}
+</script>
+</body>
+</html>
