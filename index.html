@@ -9,7 +9,7 @@
 <link rel="manifest" href="./manifest.json" />
 <link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png" />
 <link rel="apple-touch-icon" href="./icon-192.png" />
-<title>غزلان — Messenger Roleplay v6</title>
+<title>غزلان — Messenger Roleplay v7</title>
 <style>
   :root{
     --bg:#000000; --panel:#0e1017; --card:#1a1d27; --border:#272c3a;
@@ -458,6 +458,23 @@
   .lightbox img{max-width:100%;max-height:90vh;border-radius:14px}
   .mem-item{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;padding:8px 10px;background:var(--bg);border:1px solid var(--border);border-radius:10px;font-size:12.5px}
   input[type="range"]{accent-color:var(--accent1);width:100%}
+.day-sep{align-self:center;margin:12px auto 6px;padding:3px 12px;border-radius:99px;background:var(--card);color:var(--muted);font-size:11px;font-weight:700}
+.seen{font-size:10px;color:var(--accent3);text-align:end;margin-top:2px}
+.sticker-msg.a0>*,.sticker-msg.a0{animation:v7bounce 1.6s ease-in-out infinite}.sticker-msg.a1{animation:v7wig 1.8s ease-in-out infinite}.sticker-msg.a2{animation:v7pulse 1.4s ease-in-out infinite}.sticker-msg.a3{animation:v7float 2.4s ease-in-out infinite}
+.a0{animation:v7bounce 1.6s infinite}.a1{animation:v7wig 1.8s infinite}.a2{animation:v7pulse 1.4s infinite}.a3{animation:v7float 2.4s infinite}
+@keyframes v7bounce{50%{transform:translateY(-8px)}}@keyframes v7wig{25%{transform:rotate(-10deg)}75%{transform:rotate(10deg)}}@keyframes v7pulse{50%{transform:scale(1.18)}}@keyframes v7float{50%{transform:translateY(-6px) rotate(4deg)}}
+.txt-st{padding:10px 18px;border-radius:18px;font-weight:900;font-size:21px;color:#fff;transform:rotate(-3deg);box-shadow:0 4px 14px rgba(0,0,0,.35);text-shadow:0 1px 3px rgba(0,0,0,.4)}.txt-st.sm{font-size:13px;padding:8px 10px}
+.fx{position:fixed;bottom:-40px;font-size:28px;pointer-events:none;z-index:9999;animation:v7rise 2.4s ease-out forwards}
+@keyframes v7rise{to{transform:translate(var(--dx),-105vh) rotate(var(--r));opacity:0}}
+#v7fab,#v7down{position:fixed;z-index:60;width:38px;height:38px;border-radius:50%;border:1px solid var(--border);background:var(--card);color:var(--text);font-size:17px;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,.35)}
+#v7fab{top:68px;left:10px}#v7down{bottom:96px;left:10px;display:none}
+#v7sheet{position:fixed;inset:0;z-index:300;background:rgba(0,0,0,.55);display:none;align-items:flex-end}#v7sheet.open{display:flex}
+#v7sheet .box{width:100%;max-height:82dvh;overflow:auto;background:var(--panel);border-radius:22px 22px 0 0;padding:16px;display:flex;flex-direction:column;gap:10px;color:var(--text)}
+#v7sheet input{background:var(--card);border:1px solid var(--border);color:var(--text);border-radius:12px;padding:10px;font-size:14px;outline:none}
+.v7btn{background:var(--card);border:1px solid var(--border);color:var(--text);border-radius:12px;padding:10px;font-size:13px;cursor:pointer;text-align:start}
+.v7hit{padding:8px 10px;border-radius:10px;background:var(--card);font-size:13px;cursor:pointer}.v7hit small{color:var(--muted);display:block}
+.v7flash .bubble,.v7flash .gif-bubble{outline:2px solid var(--accent3)}
+
 </style>
 </head>
 <body data-theme="messenger-dark">
@@ -1505,7 +1522,7 @@ async function generateReply(c, forcedCharId=null){
 
   let streamBubble=null;
   const onToken = (partial) => {
-    const cleanPartial = partial.split('||')[0].replace(/\[(?:GIF|STICKER):[^\]]*\]?/gi,'').trim();
+    const cleanPartial = partial.split('||')[0].replace(/\[(?:GIF|STICKER|REACT):[^\]]*\]?/gi,'').trim();
     if(!cleanPartial) return;
     if(!streamBubble){
       const col=loaderRow.querySelector('.msg-col'); col.querySelector('.typing-bubble')?.remove();
@@ -1525,7 +1542,7 @@ async function generateReply(c, forcedCharId=null){
     loaderRow.remove();
     const { text, gifUrl, sticker } = parseAiRichTokens(res.text);
     const parts = text ? text.split('||').map(x=>x.trim()).filter(Boolean) : [];
-    parts.forEach(p => c.messages.push({role:'model', charId:targetChar.id, raw:p, ts:Date.now()}));
+    for(let pi=0;pi<parts.length;pi++){ if(pi>0){ saveChats(); renderCurrentChat(); await sleep(400+Math.min(parts[pi].length*18,1400)); } c.messages.push({role:'model', charId:targetChar.id, raw:parts[pi], ts:Date.now()}); }
     if(gifUrl) c.messages.push({role:'model', charId:targetChar.id, raw:'', gifUrl, ts:Date.now()});
     if(sticker) c.messages.push({role:'model', charId:targetChar.id, raw:'', sticker, ts:Date.now()});
     if(!parts.length && !gifUrl && !sticker) c.messages.push({role:'model', charId:targetChar.id, raw:res.text, ts:Date.now()});
@@ -1536,7 +1553,7 @@ async function generateReply(c, forcedCharId=null){
     saveChats(); renderCurrentChat();
 
     // Silent Auto-Memory every 10 messages
-    if(c.messages.length % 10 === 0 && targetChar.status?.autoMood) autoExtractSilentMemory(c, targetChar.id);
+    if((c._mc=(c._mc||0)+1) % 5 === 0 && targetChar.status?.autoMood) autoExtractSilentMemory(c, targetChar.id);
   }catch(err){
     loaderRow.remove();
     if(err.message!=='تم إيقاف الرد'){
@@ -1793,6 +1810,60 @@ renderHomeScreen();
 if('serviceWorker' in navigator){
   window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(()=>{}));
 }
+/* ===== v7 ADDON: emojis, stickers, effects, smarter AI, tools ===== */
+(()=>{
+const $=id=>document.getElementById(id);
+const rng=(a,b)=>{const o=[];for(let i=a;i<=b;i++){const c=String.fromCodePoint(i);if(/\p{Emoji_Presentation}/u.test(c))o.push(c)}return o};
+const flags='DZ MA TN EG SA AE QA KW BH OM JO LB SY IQ PS LY SD MR YE TR FR ES DE IT GB US CA BR AR JP KR CN IN RU PT NL SE NO CH BE MX'.split(' ').map(c=>String.fromCodePoint(...[...c].map(x=>127397+x.charCodeAt(0))));
+EMOJI_CATS.push({id:'nature',icon:'🌍',list:rng(0x1F300,0x1F3FA)},{id:'things',icon:'🎁',list:rng(0x1F400,0x1F4FF)},{id:'go',icon:'🚀',list:rng(0x1F680,0x1F6FF)},{id:'new',icon:'🤌',list:rng(0x1F900,0x1F9FF)},{id:'new2',icon:'🫠',list:rng(0x1FA70,0x1FAFF)},{id:'sym',icon:'⚡',list:rng(0x2600,0x27BF)},{id:'flags',icon:'🏴',list:flags});
+const GR=['linear-gradient(135deg,#ec4899,#8b5cf6)','linear-gradient(135deg,#10b981,#0ea5e9)','linear-gradient(135deg,#f59e0b,#ef4444)','linear-gradient(135deg,#38bdf8,#6366f1)','linear-gradient(135deg,#1e3a8a,#7c3aed)','linear-gradient(135deg,#f97316,#ec4899)','linear-gradient(135deg,#22c55e,#eab308)','linear-gradient(135deg,#f43f5e,#be123c)'];
+const TXT=['بحبك 💖','تمام ✅','هههه 😂','صباح الخير ☀️','تصبحي على خير 🌙','واش راك؟','مبروك 🎉','وحشتني 🥺','برافو 👏','زعفتني 😤','سمحلي 🙏','يا سلام 😍','بصح؟ 👀','نعسان 😴','جوعان 🍕','نحوس عليك 🫶'];
+const ANIM=['🔥','💃','🕺','🤣','😍','🥳','🫶','🤯','😎','🥹','💋','🙌','🤡','👻','🐱','🦋','🌹','💔','😭','🤌','🎉','💯','🫠','🥰'];
+const _rmt=renderMediaTray;
+renderMediaTray=function(){_rmt();if(mediaTab!=='stickers')return;const q=mediaSearch||'';
+ $('trayGrid').insertAdjacentHTML('beforeend',TXT.filter(x=>x.includes(q)).map((x,i)=>`<button class="st-tile" style="grid-column:span 2" onclick="sendSticker('txt:${x}|${i%GR.length}','${x}')"><div class="txt-st sm" style="background:${GR[i%GR.length]}">${x}</div></button>`).join('')+ANIM.map((e,i)=>`<button class="st-tile" onclick="sendSticker('${e}','متحرك')"><span class="a${i%4}" style="display:inline-block;font-size:30px">${e}</span></button>`).join(''))};
+const _rmn=renderMessageNode;
+renderMessageNode=function(m,i,c){const row=_rmn(m,i,c);row.dataset.i=i;
+ const st=row.querySelector('.sticker-msg');
+ if(st&&m.sticker){if(m.sticker.startsWith('txt:')){const[t,g]=m.sticker.slice(4).split('|');st.innerHTML=`<div class="txt-st" style="background:${GR[(g|0)%GR.length]}">${esc(t)}</div>`+(m.react?`<span class="react-badge">${m.react}</span>`:'')}else st.classList.add('a'+([...m.sticker].reduce((a,x)=>a+x.codePointAt(0),0)%4))}
+ row.querySelectorAll('.gif-bubble img').forEach(im=>im.onerror=()=>{im.replaceWith(Object.assign(document.createElement('div'),{textContent:'🖼️ تعذّر تحميل الـGIF',style:'padding:14px;font-size:12px'}))});
+ return row};
+const FX=['🎉','🥳','🎂','❤️','😂','🔥','🌹','💔','⭐'];let fxTs=Date.now();
+const fxOn=()=>store.get('rp_fx','1')==='1';
+function burst(e){for(let k=0;k<16;k++){const s=document.createElement('span');s.className='fx';s.textContent=e;s.style.left=Math.random()*92+'%';s.style.setProperty('--dx',(Math.random()*120-60)+'px');s.style.setProperty('--r',(Math.random()*80-40)+'deg');s.style.animationDelay=Math.random()*.5+'s';document.body.appendChild(s);setTimeout(()=>s.remove(),3200)}navigator.vibrate?.(25)}
+const dayLbl=ts=>{const d=new Date(ts||Date.now()),n=new Date(),y=new Date(Date.now()-864e5);return d.toDateString()===n.toDateString()?'اليوم':d.toDateString()===y.toDateString()?'أمس':d.toLocaleDateString('ar-DZ',{weekday:'long',day:'numeric',month:'long'})};
+const _rcc=renderCurrentChat;
+renderCurrentChat=function(){_rcc();const c=getChat();if(!c)return;const rows=[...chatEl.children];let last='';
+ c.messages.forEach((m,i)=>{const d=new Date(m.ts||Date.now()).toDateString();if(d!==last&&rows[i]){last=d;const s=document.createElement('div');s.className='day-sep';s.textContent=dayLbl(m.ts);chatEl.insertBefore(s,rows[i])}});
+ let u=-1;c.messages.forEach((m,i)=>{if(m.role==='user')u=i});
+ if(u>=0&&c.messages.slice(u+1).some(m=>m.role==='model'))rows[u]?.querySelector('.msg-col')?.insertAdjacentHTML('beforeend','<div class="seen">✓✓ شوهدت</div>');
+ const lm=c.messages.at(-1);
+ if(lm&&lm.ts>fxTs){fxTs=lm.ts;const t=(lm.text||lm.raw||'')+(lm.sticker||'');const e=FX.find(x=>t.includes(x));if(e&&fxOn())burst(e);
+  if(document.hidden&&lm.role==='model'&&window.Notification&&Notification.permission==='granted')navigator.serviceWorker?.ready.then(r=>r.showNotification(getDisplayName(getChar(lm.charId||c.charId)),{body:(lm.raw||'ملصق').slice(0,90),icon:'./icon-192.png'}))}};
+const _bcp=buildCharacterPrompt;
+buildCharacterPrompt=function(ch,g){let s=_bcp(ch,g);const d=new Date(),c=getChat();
+ const rec=(c?.messages||[]).filter(m=>m.role==='model'&&m.raw).slice(-4).map(m=>'- '+m.raw.slice(0,70)).join('\n');
+ s+=`\n\n[الوعي بالواقع]\nاليوم ${d.toLocaleDateString('ar-DZ',{weekday:'long',day:'numeric',month:'long'})} الساعة ${d.toLocaleTimeString('ar-DZ',{hour:'2-digit',minute:'2-digit'})}. تصرفي وفق الوقت (نعاس ليلاً، نشاط صباحاً) ولا تذكري الساعة إلا إن ناسب.\n[قواعد الواقعية]\n- تابعي مزاج ${settings.userName} وغيّري نبرتك حسبه (مواساة إذا حزين، تقلاش إذا مرح).\n- اربطي الرد بما قيل قبل قليل وبالذكريات، ولا تسألي أكثر من سؤال واحد، ولا تنهي كل رد بسؤال.\n- نوّعي البدايات والنهايات ولا تعيدي هذه الجمل الأخيرة:\n${rec||'(لا شيء)'}\n- أحياناً (ليس دائماً) ضعي [REACT:😂] أو [REACT:❤️] في سطر مستقل لتتفاعلي مع آخر رسالة له، أو [STICKER:txt:نص قصير|رقم من 0 إلى 7] لملصق نصي ملوّن.`;return s};
+const _pat=parseAiRichTokens;
+parseAiRichTokens=function(raw){let r=raw||'';const m=r.match(/\[REACT:([^\]]+)\]/i);window._aiReact=m?m[1].trim():'';return _pat(r.replace(/\[REACT:[^\]]*\]/gi,''))};
+const _ait=applyInteractiveTouch;
+applyInteractiveTouch=function(c,t){_ait(c,t);if(window._aiReact){const lu=[...c.messages].reverse().find(m=>m.role==='user');if(lu)lu.react=window._aiReact;window._aiReact=''}};
+const sheet=document.createElement('div');sheet.id='v7sheet';sheet.innerHTML='<div class="box" onclick="event.stopPropagation()"><b>✨ أدوات المحادثة</b><input id="v7q" placeholder="🔍 ابحث في المحادثة..."><div id="v7res"></div><button class="v7btn" id="v7exp">📄 تصدير المحادثة كملف نصي</button><button class="v7btn" id="v7not">🔔 تفعيل إشعارات الردود</button><button class="v7btn" id="v7fx"></button><div id="v7stats" style="font-size:12px;color:var(--muted)"></div></div>';
+sheet.onclick=()=>sheet.classList.remove('open');document.body.appendChild(sheet);
+const fab=document.createElement('button'),down=document.createElement('button');fab.id='v7fab';fab.textContent='✨';down.id='v7down';down.textContent='⬇';
+$('chatScreen').append(fab,down);
+const fxLbl=()=>$('v7fx').textContent=fxOn()?'🎆 المؤثرات: مفعّلة':'🎆 المؤثرات: متوقفة';
+fab.onclick=()=>{const c=getChat();$('v7q').value='';$('v7res').innerHTML='';fxLbl();const ms=c?.messages||[];$('v7stats').textContent=`📊 ${ms.length} رسالة • ${ms.filter(m=>m.role==='user').length} منك • ${new Set(ms.map(m=>new Date(m.ts||0).toDateString())).size} يوم محادثة`;sheet.classList.add('open')};
+$('v7fx').onclick=()=>{store.set('rp_fx',fxOn()?'0':'1');fxLbl()};
+$('v7not').onclick=()=>window.Notification?Notification.requestPermission().then(p=>showToast(p==='granted'?'تم تفعيل الإشعارات 🔔':'لم يتم السماح')):showToast('المتصفح لا يدعم الإشعارات');
+$('v7exp').onclick=()=>{const c=getChat();if(!c)return;const t=c.messages.map(m=>`[${new Date(m.ts||0).toLocaleString('ar-DZ')}] ${m.role==='user'?settings.userName:getDisplayName(getChar(m.charId||c.charId))}: ${m.text||m.raw||m.sticker||'GIF'}`).join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([t],{type:'text/plain;charset=utf-8'}));a.download='chat.txt';a.click()};
+$('v7q').oninput=e=>{const q=e.target.value.trim(),c=getChat();if(!q||!c){$('v7res').innerHTML='';return}
+ $('v7res').innerHTML=c.messages.map((m,i)=>({m,i})).filter(x=>(x.m.text||x.m.raw||'').includes(q)).slice(-25).reverse().map(x=>`<div class="v7hit" data-i="${x.i}">${esc((x.m.text||x.m.raw).slice(0,80))}<small>${fmtTime(x.m.ts)} • ${x.m.role==='user'?'أنت':'هي'}</small></div>`).join('')||'<div class="v7hit">لا نتائج</div>'};
+$('v7res').onclick=e=>{const h=e.target.closest('.v7hit');if(!h?.dataset.i)return;sheet.classList.remove('open');const r=chatEl.querySelector(`[data-i="${h.dataset.i}"]`);r?.scrollIntoView({block:'center',behavior:'smooth'});r?.classList.add('v7flash');setTimeout(()=>r?.classList.remove('v7flash'),2000)};
+chatEl.addEventListener('scroll',()=>{down.style.display=chatEl.scrollHeight-chatEl.scrollTop-chatEl.clientHeight>240?'block':'none'});
+down.onclick=()=>chatEl.scrollTo({top:chatEl.scrollHeight,behavior:'smooth'});
+})();
+
 </script>
 </body>
 </html>
