@@ -1,4 +1,4 @@
-const CACHE_NAME = 'ghazlan-rp-v7';
+const CACHE_NAME = 'ghazlan-rp-v8';
 const ASSETS = ['./', './index.html', './manifest.json', './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', (event) => {

@@ -9,7 +9,7 @@
 <link rel="manifest" href="./manifest.json" />
 <link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png" />
 <link rel="apple-touch-icon" href="./icon-192.png" />
-<title>غزلان — Messenger Roleplay v7</title>
+<title>غزلان — Messenger Roleplay v8</title>
 <style>
   :root{
     --bg:#000000; --panel:#0e1017; --card:#1a1d27; --border:#272c3a;
@@ -474,6 +474,18 @@
 .v7btn{background:var(--card);border:1px solid var(--border);color:var(--text);border-radius:12px;padding:10px;font-size:13px;cursor:pointer;text-align:start}
 .v7hit{padding:8px 10px;border-radius:10px;background:var(--card);font-size:13px;cursor:pointer}.v7hit small{color:var(--muted);display:block}
 .v7flash .bubble,.v7flash .gif-bubble{outline:2px solid var(--accent3)}
+
+.pill-input-box{min-width:0}footer textarea{min-width:0;width:100%}.send-btn{min-width:40px;min-height:40px}.send-btn svg{display:block}.foot-in>*{flex-shrink:0}.foot-in>.pill-input-box{flex-shrink:1}
+body[data-bub=flat] .user-b{background:var(--accent1)!important}
+body[data-bub=glass] .user-b,body[data-bub=glass] .bot-b{backdrop-filter:blur(10px);background:color-mix(in srgb,var(--accent1) 45%,transparent)!important}
+body[data-bub=outline] .user-b{background:transparent!important;border:2px solid var(--accent1);color:var(--text)!important}
+body[data-ff=serif] *{font-family:Georgia,"Times New Roman",serif!important}body[data-ff=mono] *{font-family:ui-monospace,Menlo,Consolas,monospace!important}body[data-ff=rounded] *{font-family:ui-rounded,"Segoe UI",Tahoma,sans-serif!important}
+body[data-anim="1"] .msg-row{animation:v8in .28s ease-out}@keyframes v8in{from{opacity:0;transform:translateY(10px) scale(.96)}}
+#v8head{position:fixed;z-index:250;width:62px;height:62px;border-radius:50%;touch-action:none;display:none;cursor:grab}
+#v8head .hv{width:100%;height:100%;border-radius:50%;overflow:hidden;border:3px solid #fff;background:var(--card);box-shadow:0 6px 22px rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;font-size:30px}
+#v8head .hv img{width:100%;height:100%;object-fit:cover}
+#v8head .bd{position:absolute;top:-4px;right:-4px;min-width:22px;height:22px;border-radius:11px;background:#f43f5e;color:#fff;font-size:12px;font-weight:800;display:none;align-items:center;justify-content:center;padding:0 5px;border:2px solid #fff}
+#v8pv{position:fixed;z-index:249;max-width:62vw;padding:9px 13px;border-radius:18px;background:var(--bot-bubble);color:var(--bot-text);font-size:13px;box-shadow:0 4px 16px rgba(0,0,0,.45);display:none}
 
 </style>
 </head>
@@ -1510,10 +1522,10 @@ async function send(){
 }
 
 async function generateReply(c, forcedCharId=null){
-  isBusy=true; currentAbort=new AbortController(); sendBtn.className='send-btn stop-mode'; sendBtn.textContent='⏹';
+  isBusy=true; currentAbort=new AbortController(); sendBtn.className='send-btn stop-mode'; sendBtn.innerHTML=window.STOP_SVG;
   const isGroup=c.type==='group';
   const targetId = isGroup ? (forcedCharId || pickNextGroupSpeaker(c, c.messages[c.messages.length-1]?.text||'')) : c.charId;
-  if(!targetId){ isBusy=false; sendBtn.className='send-btn'; sendBtn.textContent='➤'; return; }
+  if(!targetId){ isBusy=false; sendBtn.className='send-btn'; sendBtn.innerHTML=window.SEND_SVG; return; }
   const targetChar=getChar(targetId);
 
   const loaderRow=document.createElement('div'); loaderRow.className='msg-row bot-row new-group';
@@ -1562,7 +1574,7 @@ async function generateReply(c, forcedCharId=null){
       chatEl.appendChild(errRow); chatEl.scrollTop=chatEl.scrollHeight;
     }
   }finally{
-    isBusy=false; currentAbort=null; sendBtn.className='send-btn'; sendBtn.textContent='➤';
+    isBusy=false; currentAbort=null; sendBtn.className='send-btn'; sendBtn.innerHTML=window.SEND_SVG;
   }
 }
 
@@ -1862,6 +1874,71 @@ $('v7q').oninput=e=>{const q=e.target.value.trim(),c=getChat();if(!q||!c){$('v7r
 $('v7res').onclick=e=>{const h=e.target.closest('.v7hit');if(!h?.dataset.i)return;sheet.classList.remove('open');const r=chatEl.querySelector(`[data-i="${h.dataset.i}"]`);r?.scrollIntoView({block:'center',behavior:'smooth'});r?.classList.add('v7flash');setTimeout(()=>r?.classList.remove('v7flash'),2000)};
 chatEl.addEventListener('scroll',()=>{down.style.display=chatEl.scrollHeight-chatEl.scrollTop-chatEl.clientHeight>240?'block':'none'});
 down.onclick=()=>chatEl.scrollTo({top:chatEl.scrollHeight,behavior:'smooth'});
+})();
+
+/* ===== v8 ADDON: sounds, themes, wallpapers, chat head, GIF search, send-button fix ===== */
+(()=>{
+const $=id=>document.getElementById(id),S=(k,d)=>store.get('rp_'+k,d),W=(k,v)=>store.set('rp_'+k,v);
+window.SEND_SVG='<svg viewBox="0 0 24 24" width="20" height="20" fill="#fff" style="transform:scaleX(-1)"><path d="M2 21l21-9L2 3v7l15 2-15 2z"/></svg>';
+window.STOP_SVG='<svg viewBox="0 0 24 24" width="18" height="18" fill="#fff"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>';
+sendBtn.innerHTML=SEND_SVG;
+/* auto-update: drop stale cache */
+if('serviceWorker' in navigator){const had=!!navigator.serviceWorker.controller;let rl=false;navigator.serviceWorker.getRegistrations().then(r=>r.forEach(x=>x.update()));navigator.serviceWorker.addEventListener('controllerchange',()=>{if(had&&!rl){rl=true;location.reload()}})}
+/* sounds */
+const n=(f,t,d,w='sine',g=1,f2)=>({f,t,d,w,g,f2});
+const PK={messenger:n(600,0,.09,'triangle',1,950),bell:[n(988,0,.4),n(1319,.1,.45)],drop:n(900,0,.16,'sine',1,300),chime:[n(523,0,.2),n(659,.1,.2),n(784,.2,.32)],pluck:n(330,0,.2,'sawtooth',.5,200),blip:[n(1200,0,.05,'square',.4),n(1600,.06,.06,'square',.4)],whoosh:n(200,0,.22,'sine',.7,1300),coin:[n(988,0,.08,'square',.4),n(1319,.08,.32,'square',.4)],harp:[n(392,0,.28),n(494,.07,.28),n(587,.14,.28),n(784,.21,.4)],duo:[n(587,0,.12),n(880,.085,.18)],pop:n(300,0,.07,'sine',1.2,700),none:null};
+const SN={messenger:'ماسنجر',bell:'جرس',drop:'قطرة',chime:'رنين',pluck:'وتر',blip:'ألعاب',whoosh:'سحب',coin:'عملة',harp:'قيثارة',duo:'نغمتان',pop:'فقاعة',none:'بدون صوت'};
+playSound=function(kind){if(!settings.soundEnabled)return;const id=S(kind==='send'?'snd_send':'snd_recv',kind==='send'?'messenger':'duo'),p=PK[id];if(kind==='send'&&S('hap','1')==='1')navigator.vibrate?.(8);if(!p)return;
+ try{if(!audioCtx){const A=window.AudioContext||window.webkitAudioContext;if(A)audioCtx=new A()}if(!audioCtx)return;audioCtx.resume?.();const v=(S('vol','60')|0)/100*.22,t0=audioCtx.currentTime;
+ [].concat(p).forEach(x=>{const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type=x.w;o.frequency.setValueAtTime(x.f,t0+x.t);if(x.f2)o.frequency.exponentialRampToValueAtTime(x.f2,t0+x.t+x.d);g.gain.setValueAtTime(v*x.g,t0+x.t);g.gain.exponentialRampToValueAtTime(.001,t0+x.t+x.d);o.connect(g);g.connect(audioCtx.destination);o.start(t0+x.t);o.stop(t0+x.t+x.d+.02)})}catch{}};
+/* themes */
+const T=[['neon-city','نيون المدينة','#07040f','#100820','#1a0f33','#2e1a57','#f5f0ff','#b69cff','#00c2ff','#ff2bd6','#7df9ff','#1b1038'],['sakura','ساكورا (فاتح)','#fff5f8','#ffeef3','#ffe1ea','#ffc9d8','#4a1d2c','#a05a72','#ff5c8a','#ff8fab','#ff7aa2','#ffe6ee'],['mint-light','نعناع (فاتح)','#f2fffa','#e6faf2','#d6f5e8','#b9ead5','#0b3b2c','#3f7d68','#10b981','#14b8a6','#2dd4bf','#dcf5ea'],['lavender-light','لافندر (فاتح)','#f7f4ff','#efeaff','#e4dcff','#d0c4ff','#2a1b5c','#6b5aa6','#7c3aed','#a78bfa','#8b5cf6','#e8e1ff'],['cherry-black','كرز أسود','#050204','#12060a','#1e0a12','#3a1220','#fff1f3','#e29aa8','#e11d48','#f43f5e','#fb7185','#26101a'],['arctic','قطبي (فاتح)','#eaf6ff','#dff0fd','#cfe6f8','#b3d6ee','#0c2a40','#4a7a99','#0ea5e9','#38bdf8','#0284c7','#d6eaf8'],['gold-lux','ذهبي فاخر','#0a0804','#16110a','#221a0e','#3d2f17','#fff8e7','#d9bf86','#eab308','#f59e0b','#fcd34d','#2a2012'],['matrix','ماتريكس','#000a03','#041408','#08200f','#0f3a1c','#d1ffd9','#4fbf6b','#22c55e','#00a844','#69f0ae','#0a2412'],['desert-sand','رمال الصحراء (فاتح)','#fbf3e4','#f5e8d0','#ecd9b8','#d9c196','#3b2a14','#8a6d3b','#c2410c','#d97706','#ea580c','#f0e0c2'],['amoled-blue','أموليد أزرق','#000000','#05070d','#0b1020','#151d36','#eef3ff','#8aa0d6','#3b82f6','#2563eb','#60a5fa','#0f1730']];
+const st=document.createElement('style');st.textContent=T.map(([id,,bg,pn,cd,bd,tx,mu,a1,a2,a3,bt])=>`body[data-theme="${id}"]{--bg:${bg};--panel:${pn};--card:${cd};--border:${bd};--text:${tx};--muted:${mu};--accent1:${a1};--accent2:${a2};--accent3:${a3};--user-bubble:linear-gradient(135deg,${a1},${a2});--user-text:#fff;--bot-bubble:${bt};--bot-text:${tx}}`).join('\n');document.head.appendChild(st);
+T.forEach(([id,name,,,,,,,a1,a2])=>THEMES.push({id,name,c1:a1,c2:a2}));
+/* wallpapers */
+const em=(e,bg)=>({css:`url(data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="90" height="90"><text x="10" y="40" font-size="26" opacity=".16">${e}</text><text x="52" y="82" font-size="20" opacity=".12">${e}</text></svg>`)}),${bg}`,size:'90px 90px,100% 100%'});
+[['hearts','قلوب',em('💖','linear-gradient(160deg,#2a0f20,#0f0913)')],['stars','نجوم',em('⭐','linear-gradient(160deg,#0b1030,#05060f)')],['chat','فقاعات',em('💬','linear-gradient(160deg,#0a1a2b,#06090f)')],['cats','قطط',em('🐱','linear-gradient(160deg,#241a0b,#0c0907)')],['grid','شبكة',{css:'linear-gradient(rgba(255,255,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.05) 1px,transparent 1px),#0a0d14',size:'28px 28px,28px 28px,100% 100%'}],['stripes','خطوط',{css:'repeating-linear-gradient(45deg,rgba(255,255,255,.04) 0 12px,transparent 12px 24px),linear-gradient(160deg,#1a1033,#0a0814)',size:'auto,100% 100%'}],['lava','حمم',{css:'radial-gradient(circle at 30% 80%,#7f1d1d 0,transparent 45%),radial-gradient(circle at 80% 20%,#9a3412 0,transparent 40%),#0c0606'}],['mintw','نعناع',{css:'linear-gradient(160deg,#0b2a22,#07120f 60%,#0f3d33)'}],['ice','جليد',{css:'linear-gradient(160deg,#0c2438,#060d16 55%,#12405c)'}],['desertw','صحراء',{css:'linear-gradient(180deg,#2b1a0b 0%,#7c3a12 60%,#c2410c 100%)'}],['nightsky','سماء ليلية',{css:'radial-gradient(1.5px 1.5px at 20% 30%,#fff,transparent),radial-gradient(1px 1px at 70% 60%,#fff,transparent),radial-gradient(1.5px 1.5px at 45% 80%,#fff,transparent),linear-gradient(180deg,#02030a,#0b1233)',size:'160px 160px,200px 200px,140px 140px,100% 100%'}],['candy','حلوى',{css:'linear-gradient(135deg,#ff9a9e55,#fad0c455,#a18cd155),#120a14'}]].forEach(([id,label,o])=>WALLPAPERS.push({id,label,...o}));
+/* settings panel */
+const box=document.createElement('div');box.className='sec-box';const sel=(id,o,cur)=>`<select id="${id}" style="flex:1;background:var(--bg);border:1px solid var(--border);color:var(--text);padding:8px;border-radius:10px">${o.map(([v,l])=>`<option value="${v}" ${v===cur?'selected':''}>${l}</option>`).join('')}</select>`;
+const sw=(id,l,on)=>`<div class="switch-row"><span>${l}</span><input id="${id}" type="checkbox" ${on?'checked':''} style="width:18px;height:18px"></div>`;
+const so=Object.entries(SN);
+box.innerHTML=`<div class="sec-title"><span>🎛️ مظهر وأصوات (v8)</span></div>
+<div class="field"><label>🔊 صوت الإرسال</label><div class="row-gap">${sel('v8ss',so,S('snd_send','messenger'))}<button class="btn-chip" id="v8ps">▶</button></div></div>
+<div class="field"><label>🔔 صوت الرد</label><div class="row-gap">${sel('v8sr',so,S('snd_recv','duo'))}<button class="btn-chip" id="v8pr">▶</button></div></div>
+<div class="field"><label>مستوى الصوت</label><input id="v8vol" type="range" min="10" max="100" value="${S('vol','60')}"></div>
+<div class="field"><label>شكل الفقاعات</label>${sel('v8bub',[['grad','متدرجة (ماسنجر)'],['flat','لون واحد'],['glass','زجاجية'],['outline','حدود فقط']],S('bub','grad'))}</div>
+<div class="field"><label>الخط</label>${sel('v8ff',[['','الافتراضي'],['rounded','دائري'],['serif','كلاسيكي'],['mono','برمجي']],S('ff',''))}</div>
+${sw('v8fx','🎆 مؤثرات الرموز على الشاشة',S('fx','1')==='1')}${sw('v8anim','🎞️ حركة ظهور الرسائل',S('anim','1')==='1')}${sw('v8hap','📳 اهتزاز عند الإرسال',S('hap','1')==='1')}${sw('v8headchk','🫧 الفقاعة العائمة (Chat Head) داخل التطبيق',S('head','1')==='1')}`;
+$('settingsBg').querySelector('.sec-box').before(box);
+const ap=()=>{document.body.dataset.bub=S('bub','grad');document.body.dataset.ff=S('ff','');document.body.dataset.anim=S('anim','1')};ap();
+const bind=(id,k,ck)=>$(id).onchange=e=>{W(k,ck?(e.target.checked?'1':'0'):e.target.value);ap();headTick()};
+bind('v8ss','snd_send');bind('v8sr','snd_recv');bind('v8bub','bub');bind('v8ff','ff');bind('v8fx','fx',1);bind('v8anim','anim',1);bind('v8hap','hap',1);bind('v8headchk','head',1);
+$('v8vol').oninput=e=>W('vol',e.target.value);$('v8ps').onclick=()=>playSound('send');$('v8pr').onclick=()=>playSound('receive');
+/* GIF search (works without key; own Giphy key recommended) */
+let trend=[],tried=false;
+async function gifFetch(q){const k=settings.giphyKey||'dc6zaTOxFJmzC';try{const r=await fetch(`https://api.giphy.com/v1/gifs/${q?'search?q='+encodeURIComponent(q)+'&':'trending?'}api_key=${k}&limit=24&rating=pg-13`);const d=await r.json();const u=(d.data||[]).map(g=>g.images?.fixed_width?.url).filter(Boolean);if(u.length)return u}catch{}
+ try{const r=await fetch(`https://g.tenor.com/v1/${q?'search?q='+encodeURIComponent(q)+'&':'trending?'}key=LIVDSRZULELA&limit=24`);const d=await r.json();return(d.results||[]).map(x=>x.media?.[0]?.tinygif?.url).filter(Boolean)}catch{}return[]}
+const tiles=(u,q)=>u.map(x=>`<div class="gif-tile" onclick="sendGif('${x}','${esc(q||'GIF')}')"><img src="${x}" loading="lazy"></div>`).join('');
+async function showGifs(q){const g=$('trayGrid');g.className='tray-grid gifs';g.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:18px;color:var(--muted)">⏳ جاري البحث...</div>';const u=await gifFetch(q);g.innerHTML=u.length?tiles(u,q):'<div style="grid-column:1/-1;text-align:center;padding:18px;color:var(--muted)">لا نتائج (تأكد من الإنترنت أو ضع مفتاح GIPHY في الإعدادات)</div>'}
+onTraySearch=function(v){mediaSearch=v.trim().toLowerCase();if(mediaTab==='gifs'&&mediaSearch.length>1){clearTimeout(gifSearchTimer);gifSearchTimer=setTimeout(()=>showGifs(mediaSearch),350)}else renderMediaTray()};
+const CH=['تيك توك','رقص','ميمز','أنمي','كرة القدم','قطط','صباح الخير','مبروك','حزين','صدمة','حب','تحشيش'];
+const _rm2=renderMediaTray;
+renderMediaTray=function(){_rm2();if(mediaTab!=='gifs'||mediaSearch)return;$('trayCats').insertAdjacentHTML('beforeend',CH.map(c=>`<button class="cat-btn" data-q="${c}">🔎 ${c}</button>`).join(''));
+ if(trend.length&&mediaCat==='all')$('trayGrid').insertAdjacentHTML('beforeend',tiles(trend,'GIF'));else if(!tried){tried=true;gifFetch('').then(u=>{trend=u;if(mediaTab==='gifs'&&!mediaSearch)renderMediaTray()})}};
+$('trayCats').addEventListener('click',e=>{const b=e.target.closest('[data-q]');if(b){$('traySearchInp').value=b.dataset.q;mediaSearch=b.dataset.q;showGifs(b.dataset.q)}});
+/* Chat head */
+const head=document.createElement('div');head.id='v8head';head.innerHTML='<div class="hv"></div><div class="bd"></div>';const pv=document.createElement('div');pv.id='v8pv';document.body.append(head,pv);
+let unread=0,hdTs=Date.now(),pos=JSON.parse(S('headpos','null')||'null')||{x:innerWidth-72,y:innerHeight*.45};
+const place=()=>{head.style.left=pos.x+'px';head.style.top=pos.y+'px'};place();
+const inChat=()=>getComputedStyle($('chatScreen')).display!=='none';
+function headTick(){const c=chats.find(x=>x.id===currentChatId)||chats[0];const on=S('head','1')==='1'&&c&&!inChat();head.style.display=on?'block':'none';if(!on){pv.style.display='none';return}
+ const ch=getChar(c.charId||c.memberIds?.[0]);head.querySelector('.hv').innerHTML=renderAvatarHtml(ch);const b=head.querySelector('.bd');b.style.display=unread?'flex':'none';b.textContent=unread}
+setInterval(headTick,800);
+let drag=null;head.addEventListener('pointerdown',e=>{drag={dx:e.clientX-pos.x,dy:e.clientY-pos.y,m:false};head.setPointerCapture(e.pointerId)});
+head.addEventListener('pointermove',e=>{if(!drag)return;const x=e.clientX-drag.dx,y=e.clientY-drag.dy;if(Math.abs(x-pos.x)+Math.abs(y-pos.y)>6)drag.m=true;pos={x:Math.max(0,Math.min(innerWidth-62,x)),y:Math.max(0,Math.min(innerHeight-62,y))};place();pv.style.display='none'});
+head.addEventListener('pointerup',()=>{if(!drag)return;const mv=drag.m;drag=null;if(mv){pos.x=pos.x+31<innerWidth/2?6:innerWidth-68;head.style.transition='left .25s';place();setTimeout(()=>head.style.transition='',260);W('headpos',JSON.stringify(pos))}else{const c=chats.find(x=>x.id===currentChatId)||chats[0];if(c){unread=0;openChatById(c.id);headTick()}}});
+const _oc=openChatById;openChatById=function(id){unread=0;_oc(id);headTick()};
+const _r3=renderCurrentChat;renderCurrentChat=function(){_r3();const c=getChat(),lm=c?.messages?.at(-1);if(lm&&lm.ts>hdTs){hdTs=lm.ts;if(lm.role==='model'&&!inChat()&&S('head','1')==='1'){unread++;headTick();pv.textContent=(lm.raw||'📎 ملصق').slice(0,70);pv.style.display='block';pv.style.top=Math.max(8,pos.y+6)+'px';pv.style[pos.x<innerWidth/2?'left':'right']=(pos.x<innerWidth/2?pos.x+70:innerWidth-pos.x+4)+'px';pv.style[pos.x<innerWidth/2?'right':'left']='auto';setTimeout(()=>pv.style.display='none',4500)}}};
 })();
 
 </script>
