@@ -1,5 +1,5 @@
-const CACHE_NAME = 'ghazlan-rp-v9';
-const ASSETS = ['./', './index.html', './api-client.js', './bridge.js', './manifest.json', './icon-192.png', './icon-512.png'];
+const CACHE_NAME = 'ghazlan-rp-v10';
+const ASSETS = ['./', './index.html', './api-client.js', './tasks-ui.js', './bridge.js', './manifest.json', './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
@@ -21,7 +21,6 @@ self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
   const url = new URL(event.request.url);
   if (url.origin !== self.location.origin) return;
-  // Never cache backend API/Auth paths
   if (/\/(functions|rest|auth)\/v1\//.test(url.pathname)) return;
   event.respondWith(
     fetch(event.request).then((resp) => {

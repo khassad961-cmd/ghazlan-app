@@ -1422,6 +1422,7 @@ async function runSmartCompletion(opts, onToken){
     maxTokens: settings.maxTokens || 8192,
     fastMode: settings.fastMode,
     autoFallback: settings.autoFallback,
+    timezone: window.GhazlanTime ? window.GhazlanTime.getTimezone() : 'Africa/Algiers',
     stream: settings.streaming && opts.stream !== false
   }, onToken, opts.signal);
 }
@@ -1928,6 +1929,7 @@ const _r3=renderCurrentChat;renderCurrentChat=function(){_r3();const c=getChat()
 })();
 
 </script>
+<script src="tasks-ui.js"></script>
 <script src="bridge.js"></script>
 </body>
 </html>
