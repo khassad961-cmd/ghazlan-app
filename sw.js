@@ -1,5 +1,6 @@
-const CACHE_NAME = 'ghazlan-rp-v11';
-const ASSETS = ['./', './index.html', './api-client.js', './tasks-ui.js', './phase3-ui.js', './bridge.js', './manifest.json', './icon-192.png', './icon-512.png'];
+const CACHE_NAME = 'ghazlan-rp-v12';
+const ASSETS = ['./', './index.html', './api-client.js', './tasks-ui.js', './phase3-ui.js',
+  './discover-ui.js', './bridge.js', './manifest.json', './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
