@@ -1,5 +1,5 @@
-const CACHE_NAME = 'ghazlan-rp-v14';
-const ASSETS = ['./', './index.html', './api-client.js', './tasks-ui.js', './phase3-ui.js',
+const CACHE_NAME = 'ghazlan-rp-v15';
+const ASSETS = ['./', './index.html', './api-client.js', './media-library.js', './tasks-ui.js', './phase3-ui.js',
   './discover-ui.js',
   './memory-world-ui.js',
   './social-p6-ui.js',
