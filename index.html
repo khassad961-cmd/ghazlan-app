@@ -772,20 +772,33 @@ body[data-anim="1"] .msg-row{animation:v8in .28s ease-out}@keyframes v8in{from{o
       <div class="switch-row"><span>✨ ذكاء متطور (فقاعات مقسمة + إرسال GIF/ملصقات + ذاكرة تلقائية)</span><input id="interactiveChk" type="checkbox" checked style="width:18px;height:18px" /></div>
     </div>
     <div class="sec-box">
-      <div class="sec-title"><span>1️⃣ Google Gemini API</span></div>
-      <div class="field"><textarea id="geminiKeyInput" rows="2" placeholder="AIzaSy... (مفتاح في كل سطر)"></textarea></div>
+      <div class="sec-title"><span>🔐 الخادم الآمن (Supabase Backend) — بلا مفاتيح سرية في الهاتف</span></div>
+      <div style="font-size:11.5px;color:var(--muted);line-height:1.5">مفاتيح Gemini وGroq وOpenRouter وGIPHY تُحفظ فقط في أسرار الخادم (Supabase Secrets) ولا تُخزّن أبداً في التطبيق أو الـAPK.</div>
+      <div class="field"><label>رابط مشروع Supabase</label><input id="sbUrlInput" placeholder="https://xxxx.supabase.co" /></div>
+      <div class="field"><label>مفتاح anon العام (مسموح في الواجهة)</label><input id="sbAnonInput" placeholder="eyJhbGciOi..." /></div>
+      <div id="sbAuthStatus" style="font-size:12px;color:var(--accent3);font-weight:700"></div>
+      <div id="sbAuthBox" class="row-gap">
+        <input id="sbEmailInput" type="email" placeholder="البريد الإلكتروني" style="flex:1;min-width:140px;background:var(--bg);border:1px solid var(--border);color:var(--text);padding:8px;border-radius:10px;font-size:12.5px" />
+        <input id="sbPassInput" type="password" placeholder="كلمة المرور" style="flex:1;min-width:120px;background:var(--bg);border:1px solid var(--border);color:var(--text);padding:8px;border-radius:10px;font-size:12.5px" />
+      </div>
       <div class="row-gap">
-        <select id="geminiModelSelect" style="flex:1;background:var(--bg);border:1px solid var(--border);color:var(--text);padding:8px;border-radius:10px;font-size:12px"><option value="auto">تلقائي ذكي</option><option value="gemini-2.5-flash">gemini-2.5-flash</option><option value="gemini-2.5-flash-lite">gemini-2.5-flash-lite</option><option value="gemma-3-27b-it">gemma-3-27b-it</option></select>
-        <button class="btn-chip" onclick="fetchGeminiModels()">🔄 فحص</button>
+        <button class="btn-chip" id="sbLoginBtn" onclick="handleSbSignIn()">🔑 دخول</button>
+        <button class="btn-chip" id="sbSignupBtn" onclick="handleSbSignUp()">✨ إنشاء حساب</button>
+        <button class="btn-chip" id="sbLogoutBtn" style="display:none;color:var(--rose)" onclick="handleSbSignOut()">🚪 خروج</button>
+      </div>
+      <div class="row-gap" style="margin-top:4px">
+        <button class="btn-chip" style="flex:1" onclick="handleCloudMigration()">☁️ ترحيل بياناتي للسحابة</button>
+        <button class="btn-chip" style="flex:1" onclick="handleRollbackLocal()">↩️ استرجاع قبل الترحيل</button>
       </div>
     </div>
     <div class="sec-box">
-      <div class="sec-title"><span>2️⃣ Groq / OpenRouter / GIPHY</span></div>
-      <div class="field"><input id="groqKeyInput" type="password" placeholder="Groq API Key (gsk_...)" /></div>
-      <div class="field"><select id="groqModelSelect"><option value="llama-3.3-70b-versatile">llama-3.3-70b-versatile</option><option value="meta-llama/llama-4-scout-17b-16e-instruct">llama-4-scout-17b</option><option value="qwen/qwen3-32b">qwen3-32b</option></select></div>
-      <div class="field"><input id="orKeyInput" type="password" placeholder="OpenRouter Key (اختياري)" /></div>
-      <div class="field"><input id="orModelInput" placeholder="google/gemma-3-27b-it:free" /></div>
-      <div class="field"><label>مفتاح GIPHY للبحث المباشر عن آلاف الـGIF (اختياري — يوجد مكتبة مدمجة جاهزة!)</label><input id="giphyKeyInput" placeholder="GIPHY API Key (اختياري)" /></div>
+      <div class="sec-title"><span>🤖 اختيار النماذج (تعمل عبر الخادم الآمن)</span></div>
+      <div class="row-gap">
+        <select id="geminiModelSelect" style="flex:1;background:var(--bg);border:1px solid var(--border);color:var(--text);padding:8px;border-radius:10px;font-size:12px"><option value="auto">تلقائي ذكي</option><option value="gemini-2.5-flash">gemini-2.5-flash</option><option value="gemini-2.5-flash-lite">gemini-2.5-flash-lite</option><option value="gemma-3-27b-it">gemma-3-27b-it</option></select>
+        <button class="btn-chip" onclick="fetchGeminiModels()">🔄 فحص من الخادم</button>
+      </div>
+      <div class="field"><label>نموذج Groq</label><select id="groqModelSelect"><option value="llama-3.3-70b-versatile">llama-3.3-70b-versatile</option><option value="meta-llama/llama-4-scout-17b-16e-instruct">llama-4-scout-17b</option><option value="qwen/qwen3-32b">qwen3-32b</option></select></div>
+      <div class="field"><label>نموذج OpenRouter</label><input id="orModelInput" placeholder="google/gemma-3-27b-it:free" /></div>
     </div>
     <div class="sec-box">
       <div class="sec-title"><span>🎛️ الرموز والأصوات والنسخ الاحتياطي</span></div>
@@ -818,6 +831,7 @@ body[data-anim="1"] .msg-row{animation:v8in .28s ease-out}@keyframes v8in{from{o
 
 <div id="lightbox" class="lightbox" onclick="this.classList.remove('open')"><img id="lbImg" src="" alt="تكبير" /></div>
 
+<script src="api-client.js"></script>
 <script>
 // =========================================================================
 // CURATED ANIMATED GIFs, STICKERS & CATEGORIZED EMOJIS (TikTok/IG/Messenger)
@@ -899,7 +913,7 @@ const MOOD_PRESETS = ['رايقة ✨','فرحانة 😊','عنيدة 😤','م
 const memStore = {};
 const store = {
   get(k, fb=''){ try{ const v=localStorage.getItem(k); return v!==null?v:fb; }catch{ return memStore[k]??fb; } },
-  set(k, v){ memStore[k]=v; try{ localStorage.setItem(k, v); }catch{} }
+  set(k, v){ memStore[k]=v; try{ localStorage.setItem(k, v); }catch(e){ if(typeof showToast==='function'&&!window._qWarn){window._qWarn=1;showToast('⚠️ ذاكرة المتصفح ممتلئة! احفظ نسخة احتياطية أو رحّل بياناتك للسحابة.');} } }
 };
 function loadJSON(k, fb){ try{ const v=store.get(k,''); return v?JSON.parse(v):fb; }catch{ return fb; } }
 
@@ -912,13 +926,9 @@ let settings = {
   streaming: store.get('rp_streaming', '1') === '1',
   fastMode: store.get('rp_fastmode', '1') === '1',
   interactiveMode: store.get('rp_interactive', '1') === '1',
-  geminiKey: store.get('rp_gemini_key', ''),
   geminiModel: store.get('rp_gemini_model', 'auto'),
-  groqKey: store.get('rp_groq_key', ''),
   groqModel: store.get('rp_groq_model', 'llama-3.3-70b-versatile'),
-  orKey: store.get('rp_or_key', ''),
   orModel: store.get('rp_or_model', 'google/gemma-3-27b-it:free'),
-  giphyKey: store.get('rp_giphy_key', ''),
   maxTokens: Number(store.get('rp_max_tokens', '8192')) || 8192,
   temperature: Number(store.get('rp_temp', '0.88')) || 0.88,
   soundEnabled: store.get('rp_sound', '1') === '1',
@@ -1217,23 +1227,17 @@ function setMediaTab(tab){
 let gifSearchTimer = null;
 function onTraySearch(val){
   mediaSearch = val.trim().toLowerCase();
-  if(mediaTab === 'gifs' && settings.giphyKey && mediaSearch.length > 1){
+  if(mediaTab === 'gifs' && window.GhazlanAPI?.isConfigured() && mediaSearch.length > 1){
     clearTimeout(gifSearchTimer);
     gifSearchTimer = setTimeout(()=> searchGiphyLive(mediaSearch), 350);
   } else renderMediaTray();
 }
 async function searchGiphyLive(q){
-  try{
-    const r = await fetch(`https://api.giphy.com/v1/gifs/search?api_key=${encodeURIComponent(settings.giphyKey)}&q=${encodeURIComponent(q)}&limit=18&rating=pg-13`);
-    const d = await r.json();
-    const grid = document.getElementById('trayGrid'); grid.className='tray-grid gifs';
-    if(d.data?.length){
-      grid.innerHTML = d.data.map(g => {
-        const u = g.images?.fixed_width?.url || g.images?.original?.url;
-        return `<div class="gif-tile" onclick="sendGif('${u}','${esc(q)}')"><img src="${u}" loading="lazy" /><span>${esc(g.title||q)}</span></div>`;
-      }).join('');
-    }
-  }catch{}
+  const urls = await (window.GhazlanAPI ? window.GhazlanAPI.searchGifs(q) : []);
+  const grid = document.getElementById('trayGrid'); grid.className='tray-grid gifs';
+  if(urls.length){
+    grid.innerHTML = urls.map(u => `<div class="gif-tile" onclick="sendGif('${u}','${esc(q)}')"><img src="${u}" loading="lazy" /></div>`).join('');
+  }
 }
 function renderMediaTray(){
   const grid = document.getElementById('trayGrid'), cats = document.getElementById('trayCats');
@@ -1403,84 +1407,23 @@ function normalizeMessages(rawMessages, forCharId, isGroup){
   return clean;
 }
 
-function getGeminiKeyPool(){ return (settings.geminiKey||'').split(/[\n,;]+/).map(k=>k.trim()).filter(Boolean); }
-async function callSingleGemini(apiKey, modelName, opts, onToken){
-  const isGemma=/^gemma/i.test(modelName), norm=normalizeMessages(opts.messages, opts.forCharId, opts.isGroup);
-  const contents=norm.map((m,i)=>{
-    const parts=[]; if(m.role==='user'&&m.imgBase64&&!isGemma) parts.push({inline_data:{mime_type:m.imgMime||'image/jpeg',data:m.imgBase64}});
-    parts.push({text: (isGemma&&i===0)?`[تعليمات]\n${opts.systemPrompt}\n\n${m.text}`:m.text});
-    return {role:m.role==='user'?'user':'model', parts};
-  });
-  const genCfg={temperature:opts.temperature??settings.temperature, maxOutputTokens:settings.maxTokens||8192};
-  if(settings.fastMode && /gemini-2\.5-flash/i.test(modelName)) genCfg.thinkingConfig={thinkingBudget:0};
-  const body={contents, generationConfig:genCfg}; if(!isGemma) body.system_instruction={parts:[{text:opts.systemPrompt}]};
-  const useStream = settings.streaming && opts.stream!==false && typeof onToken==='function';
-  const ep = useStream
-    ? `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(modelName)}:streamGenerateContent?alt=sse&key=${encodeURIComponent(apiKey)}`
-    : `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(modelName)}:generateContent?key=${encodeURIComponent(apiKey)}`;
-  const res = await fetch(ep, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body), signal:opts.signal});
-  if(!res.ok){ const d=await res.json().catch(()=>({})); const err=new Error(d?.error?.message||`HTTP ${res.status}`); err.status=res.status; throw err; }
-  if(useStream && res.body){
-    const reader=res.body.getReader(), dec=new TextDecoder(); let buf='', full='';
-    while(true){
-      const {value, done}=await reader.read(); if(done) break;
-      buf+=dec.decode(value,{stream:true}); const lines=buf.split('\n'); buf=lines.pop()||'';
-      for(const l of lines){ const t=l.trim(); if(!t.startsWith('data:')) continue; const js=t.slice(5).trim(); if(!js||js==='[DONE]') continue;
-        try{ const ch=(JSON.parse(js)?.candidates?.[0]?.content?.parts||[]).map(p=>p.text||'').join(''); if(ch){full+=ch; onToken(full);} }catch{}
-      }
-    }
-    if(!full.trim()) throw new Error('رد فارغ'); return {text:full.trim()};
-  }
-  const d=await res.json().catch(()=>({})); const text=(d?.candidates?.[0]?.content?.parts||[]).map(p=>p.text||'').join('\n').trim();
-  if(!text) throw new Error('رد فارغ'); return {text};
-}
-
-async function callOpenAICompat(ep, apiKey, model, opts, onToken){
-  const norm=normalizeMessages(opts.messages, opts.forCharId, opts.isGroup);
-  const msgs=[{role:'system',content:opts.systemPrompt}, ...norm.map(m=>({role:m.role==='user'?'user':'assistant',content:m.text}))];
-  const useStream=settings.streaming && opts.stream!==false && typeof onToken==='function';
-  const res=await fetch(ep,{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${apiKey}`},body:JSON.stringify({model,messages:msgs,temperature:opts.temperature??settings.temperature,max_tokens:Math.min(settings.maxTokens||8192,32768),stream:useStream}),signal:opts.signal});
-  if(!res.ok){ const d=await res.json().catch(()=>({})); const err=new Error(d?.error?.message||`HTTP ${res.status}`); err.status=res.status; throw err; }
-  if(useStream&&res.body){
-    const reader=res.body.getReader(), dec=new TextDecoder(); let buf='', full='';
-    while(true){
-      const {value, done}=await reader.read(); if(done) break;
-      buf+=dec.decode(value,{stream:true}); const lines=buf.split('\n'); buf=lines.pop()||'';
-      for(const l of lines){ const t=l.trim(); if(!t.startsWith('data:')) continue; const js=t.slice(5).trim(); if(!js||js==='[DONE]') continue;
-        try{ const d=JSON.parse(js)?.choices?.[0]?.delta?.content||''; if(d){full+=d;onToken(full);} }catch{}
-      }
-    }
-    if(!full.trim()) throw new Error('رد فارغ'); return {text:full.trim()};
-  }
-  const d=await res.json().catch(()=>({})); const text=d.choices?.[0]?.message?.content?.trim()||'';
-  if(!text) throw new Error('رد فارغ'); return {text};
-}
-
+function isBackendReady(){ return Boolean(window.GhazlanAPI && window.GhazlanAPI.isConfigured() && window.GhazlanAPI.isSignedIn()); }
 async function runSmartCompletion(opts, onToken){
-  const attempts=[], now=Date.now();
-  const addGem = async () => {
-    const keys=getGeminiKeyPool(); if(!keys.length) return;
-    if(!cachedGeminiModels.length) await discoverGeminiModels(keys[0], true);
-    let models = cachedGeminiModels.length?[...cachedGeminiModels]:['gemini-2.5-flash-lite','gemini-2.5-flash','gemini-2.0-flash','gemma-3-27b-it'];
-    if(settings.geminiModel&&settings.geminiModel!=='auto') models=[settings.geminiModel,...models.filter(m=>m!==settings.geminiModel)];
-    models = settings.autoFallback ? models.slice(0,5) : models.slice(0,1);
-    const rot=keys.map((_,i)=>keys[(keyCursor+i)%keys.length]).filter(k=>!keyCooldowns[k]||keyCooldowns[k]<now);
-    const act=rot.length?rot:keys; keyCursor=(keyCursor+1)%keys.length;
-    models.forEach(m=>act.slice(0,3).forEach(k=>attempts.push({key:k, run:()=>callSingleGemini(k,m,opts,onToken)})));
-  };
-  const addGroq = () => { if(!settings.groqKey) return; [settings.groqModel,'llama-3.3-70b-versatile'].filter((v,i,a)=>v&&a.indexOf(v)===i).forEach(m=>attempts.push({run:()=>callOpenAICompat('https://api.groq.com/openai/v1/chat/completions',settings.groqKey,m,opts,onToken)})); };
-  const addOR = () => { if(!settings.orKey) return; attempts.push({run:()=>callOpenAICompat('https://openrouter.ai/api/v1/chat/completions',settings.orKey,settings.orModel,opts,onToken)}); };
-  if(settings.provider==='groq'){ addGroq(); if(settings.autoFallback){await addGem();addOR();} }
-  else if(settings.provider==='openrouter'){ addOR(); if(settings.autoFallback){addGroq();await addGem();} }
-  else { await addGem(); if(settings.autoFallback){addGroq();addOR();} }
-  if(!attempts.length) throw new Error('أضف مفتاح API في الإعدادات ⚙️ أولاً.');
-  let lastErr=null;
-  for(const att of attempts){
-    if(opts.signal?.aborted) throw new Error('تم إيقاف الرد');
-    try{ return await att.run(); }
-    catch(e){ if(e.name==='AbortError') throw new Error('تم إيقاف الرد'); lastErr=e; if(att.key&&(e.status===429||e.status===503)) keyCooldowns[att.key]=Date.now()+25000; if(!settings.autoFallback) break; await sleep(200); }
-  }
-  throw lastErr||new Error('تعذر الاتصال');
+  if(!window.GhazlanAPI) throw new Error('تعذر تحميل عميل الخادم الآمن (api-client.js).');
+  const norm = normalizeMessages(opts.messages, opts.forCharId, opts.isGroup);
+  return await window.GhazlanAPI.streamChatCompletion({
+    provider: settings.provider,
+    geminiModel: settings.geminiModel,
+    groqModel: settings.groqModel,
+    orModel: settings.orModel,
+    systemPrompt: opts.systemPrompt,
+    messages: norm,
+    temperature: opts.temperature ?? settings.temperature,
+    maxTokens: settings.maxTokens || 8192,
+    fastMode: settings.fastMode,
+    autoFallback: settings.autoFallback,
+    stream: settings.streaming && opts.stream !== false
+  }, onToken, opts.signal);
 }
 
 async function handleFile(input){
@@ -1499,7 +1442,7 @@ function onSendBtnClick(){ if(isBusy){ currentAbort?.abort(); return; } send(); 
 
 async function sendSpecialMessage(payload){
   if(isBusy) return;
-  if(!getGeminiKeyPool().length && !settings.groqKey && !settings.orKey){ toggleSettings(true); return showToast('أدخل مفتاح API أولاً 🔑'); }
+  if(!isBackendReady()){ toggleSettings(true); return showToast('اربط خادم Supabase وسجّل الدخول من الإعدادات ⚙️ أولاً'); }
   const c=getChat(); if(!c) return;
   document.getElementById('quickRepliesBar').classList.remove('show');
   c.messages.push({role:'user',...payload,quote:pendingQuote,ts:Date.now()});
@@ -1511,7 +1454,7 @@ async function sendSpecialMessage(payload){
 async function send(){
   if(isBusy) return;
   const q=promptEl.value.trim(); if(!q && !pendingImage) return;
-  if(!getGeminiKeyPool().length && !settings.groqKey && !settings.orKey){ toggleSettings(true); return showToast('أدخل مفتاح API أولاً 🔑'); }
+  if(!isBackendReady()){ toggleSettings(true); return showToast('اربط خادم Supabase وسجّل الدخول من الإعدادات ⚙️ أولاً'); }
   const c=getChat(); if(!c) return;
   document.getElementById('quickRepliesBar').classList.remove('show'); toggleMediaTray(false);
   c.messages.push({role:'user',text:q,quote:pendingQuote,imgBase64:pendingImage?.base64||null,imgMime:pendingImage?.mimeType||null,imgDataUrl:pendingImage?.dataUrl||null,imgThumb:pendingImage?.thumb||null,ts:Date.now()});
@@ -1769,14 +1712,61 @@ function ctxSpeak(){const m=getChat()?.messages?.[ctxTarget];if(!m||!('speechSyn
 function ctxRegen(){document.getElementById('ctxMenu').classList.remove('open');if(ctxTarget!==null)regenerateFrom(ctxTarget);}
 function ctxDelete(){const c=getChat();if(!c||ctxTarget===null)return;c.messages.splice(ctxTarget,1);saveChats();renderCurrentChat();document.getElementById('ctxMenu').classList.remove('open');}
 
+function syncSbAuthUI(){
+  const cfg = window.GhazlanAPI?.getConfig() || {url:'', anonKey:''};
+  const sess = window.GhazlanAPI?.getSession();
+  const signed = Boolean(sess?.access_token && sess?.user?.email);
+  const urlEl = document.getElementById('sbUrlInput'); if(urlEl) urlEl.value = cfg.url;
+  const anonEl = document.getElementById('sbAnonInput'); if(anonEl) anonEl.value = cfg.anonKey;
+  const stEl = document.getElementById('sbAuthStatus');
+  if(stEl) stEl.textContent = signed ? `✅ متصل بحساب: ${sess.user.email}` : '⚪ غير مسجل الدخول (التخزين المحلي يعمل دون اتصال)';
+  const box = document.getElementById('sbAuthBox'); if(box) box.style.display = signed ? 'none' : 'flex';
+  const lb = document.getElementById('sbLoginBtn'); if(lb) lb.style.display = signed ? 'none' : 'inline-block';
+  const sb = document.getElementById('sbSignupBtn'); if(sb) sb.style.display = signed ? 'none' : 'inline-block';
+  const ob = document.getElementById('sbLogoutBtn'); if(ob) ob.style.display = signed ? 'inline-block' : 'none';
+}
+async function handleSbSignIn(){
+  window.GhazlanAPI.saveConfig(document.getElementById('sbUrlInput').value, document.getElementById('sbAnonInput').value);
+  try{
+    await window.GhazlanAPI.signIn(document.getElementById('sbEmailInput').value.trim(), document.getElementById('sbPassInput').value);
+    syncSbAuthUI(); showToast('تم تسجيل الدخول بنجاح ✅');
+  }catch(e){ showToast('تعذر الدخول: ' + e.message); }
+}
+async function handleSbSignUp(){
+  window.GhazlanAPI.saveConfig(document.getElementById('sbUrlInput').value, document.getElementById('sbAnonInput').value);
+  try{
+    const d = await window.GhazlanAPI.signUp(document.getElementById('sbEmailInput').value.trim(), document.getElementById('sbPassInput').value);
+    syncSbAuthUI(); showToast(d.access_token ? 'تم إنشاء الحساب وتسجيل الدخول ✅' : 'تم إنشاء الحساب! تحقق من بريدك الإلكتروني للتأكيد.');
+  }catch(e){ showToast('تعذر إنشاء الحساب: ' + e.message); }
+}
+async function handleSbSignOut(){
+  await window.GhazlanAPI.signOut(); syncSbAuthUI(); showToast('تم تسجيل الخروج');
+}
+async function handleCloudMigration(){
+  window.GhazlanAPI.saveConfig(document.getElementById('sbUrlInput').value, document.getElementById('sbAnonInput').value);
+  try{
+    const r = await window.GhazlanAPI.migrateLocalToCloud({ userName: settings.userName, characters, chats, memoriesByChar });
+    showToast(`تم الترحيل بنجاح ☁️✅ (${r.characters} شخصية، ${r.chats} محادثة، ${r.memories} ذكرى) — مع حفظ نسخة رجوع محلية`);
+  }catch(e){ showToast(e.message); }
+}
+function handleRollbackLocal(){
+  const snap = window.GhazlanAPI?.getRollbackSnapshot();
+  if(!snap) return showToast('لا توجد نسخة رجوع محفوظة بعد.');
+  characters = snap.characters || characters;
+  chats = snap.chats || chats;
+  memoriesByChar = snap.memoriesByChar || memoriesByChar;
+  saveCharacters(); saveChats(); saveMemories();
+  renderHomeScreen(); showToast('تم استرجاع النسخة المحلية قبل الترحيل بنجاح ↩️✅');
+}
 function toggleSettings(open){
   if(open){
+    syncSbAuthUI();
     document.getElementById('providerSelect').value=settings.provider; document.getElementById('streamingChk').checked=settings.streaming;
     document.getElementById('autoFallbackChk').checked=settings.autoFallback; document.getElementById('fastModeChk').checked=settings.fastMode;
-    document.getElementById('interactiveChk').checked=settings.interactiveMode; document.getElementById('geminiKeyInput').value=settings.geminiKey;
-    document.getElementById('groqKeyInput').value=settings.groqKey; document.getElementById('groqModelSelect').value=settings.groqModel;
-    document.getElementById('orKeyInput').value=settings.orKey; document.getElementById('orModelInput').value=settings.orModel;
-    document.getElementById('giphyKeyInput').value=settings.giphyKey;
+    document.getElementById('interactiveChk').checked=settings.interactiveMode;
+    document.getElementById('geminiModelSelect').value=settings.geminiModel;
+    document.getElementById('groqModelSelect').value=settings.groqModel;
+    document.getElementById('orModelInput').value=settings.orModel;
     document.getElementById('maxTokRange').value=settings.maxTokens; document.getElementById('maxTokVal').textContent=settings.maxTokens;
     document.getElementById('tempRange').value=settings.temperature; document.getElementById('tempVal').textContent=settings.temperature;
     document.getElementById('soundChk').checked=settings.soundEnabled; document.getElementById('pinSetInput').value=settings.pin;
@@ -1784,28 +1774,25 @@ function toggleSettings(open){
   document.getElementById('settingsBg').classList.toggle('open', open);
 }
 function saveSettings(){
+  window.GhazlanAPI?.saveConfig(document.getElementById('sbUrlInput').value, document.getElementById('sbAnonInput').value);
   settings.provider=document.getElementById('providerSelect').value; settings.streaming=document.getElementById('streamingChk').checked;
   settings.autoFallback=document.getElementById('autoFallbackChk').checked; settings.fastMode=document.getElementById('fastModeChk').checked;
-  settings.interactiveMode=document.getElementById('interactiveChk').checked; settings.geminiKey=document.getElementById('geminiKeyInput').value.trim();
-  settings.geminiModel=document.getElementById('geminiModelSelect').value; settings.groqKey=document.getElementById('groqKeyInput').value.trim();
-  settings.groqModel=document.getElementById('groqModelSelect').value; settings.orKey=document.getElementById('orKeyInput').value.trim();
+  settings.interactiveMode=document.getElementById('interactiveChk').checked;
+  settings.geminiModel=document.getElementById('geminiModelSelect').value;
+  settings.groqModel=document.getElementById('groqModelSelect').value;
   settings.orModel=document.getElementById('orModelInput').value.trim()||'google/gemma-3-27b-it:free';
-  settings.giphyKey=document.getElementById('giphyKeyInput').value.trim();
   settings.maxTokens=Number(document.getElementById('maxTokRange').value)||8192; settings.temperature=Number(document.getElementById('tempRange').value)||0.88;
   settings.soundEnabled=document.getElementById('soundChk').checked; settings.pin=document.getElementById('pinSetInput').value.trim();
-  Object.entries({rp_provider:settings.provider,rp_streaming:settings.streaming?'1':'0',rp_autofallback:settings.autoFallback?'1':'0',rp_fastmode:settings.fastMode?'1':'0',rp_interactive:settings.interactiveMode?'1':'0',rp_gemini_key:settings.geminiKey,rp_gemini_model:settings.geminiModel,rp_groq_key:settings.groqKey,rp_groq_model:settings.groqModel,rp_or_key:settings.orKey,rp_or_model:settings.orModel,rp_giphy_key:settings.giphyKey,rp_max_tokens:String(settings.maxTokens),rp_temp:String(settings.temperature),rp_sound:settings.soundEnabled?'1':'0',rp_pin:settings.pin}).forEach(([k,v])=>store.set(k,v));
+  Object.entries({rp_provider:settings.provider,rp_streaming:settings.streaming?'1':'0',rp_autofallback:settings.autoFallback?'1':'0',rp_fastmode:settings.fastMode?'1':'0',rp_interactive:settings.interactiveMode?'1':'0',rp_gemini_model:settings.geminiModel,rp_groq_model:settings.groqModel,rp_or_model:settings.orModel,rp_max_tokens:String(settings.maxTokens),rp_temp:String(settings.temperature),rp_sound:settings.soundEnabled?'1':'0',rp_pin:settings.pin}).forEach(([k,v])=>store.set(k,v));
   toggleSettings(false); showToast('تم الحفظ ✅');
 }
-async function discoverGeminiModels(k, silent=false){
-  const key=(k||'').split(/[\n,;]+/)[0]?.trim(); if(!key)return[];
+async function fetchGeminiModels(){
   try{
-    const d=await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${encodeURIComponent(key)}`).then(r=>r.json());
-    const l=(d.models||[]).filter(m=>(m.supportedGenerationMethods||[]).includes('generateContent')).map(m=>m.name.replace(/^models\//,'')).filter(n=>/^(gemini|gemma)/i.test(n)&&!/(embedding|imagen|veo|tts|audio|live)/i.test(n));
-    cachedGeminiModels=l; store.set('rp_gemini_models',JSON.stringify(l));
-    if(!silent)showToast(`تم اكتشاف ${l.length} نموذج ✅`); return l;
-  }catch{return[];}
+    const l = await window.GhazlanAPI.listModels();
+    if(l.length){ cachedGeminiModels=l; store.set('rp_gemini_models',JSON.stringify(l)); showToast(`تم اكتشاف ${l.length} نموذج من الخادم ✅`); }
+    else showToast('سجّل الدخول وتأكد من ضبط GEMINI_API_KEYS في أسرار Supabase.');
+  }catch{ showToast('تعذر الاتصال بالخادم.'); }
 }
-async function fetchGeminiModels(){ await discoverGeminiModels(document.getElementById('geminiKeyInput').value||settings.geminiKey, false); }
 function unlockPin(){ if(document.getElementById('pinUnlockInput').value.trim()===settings.pin) document.getElementById('pinLock').classList.remove('open'); else showToast('رمز غير صحيح ❌'); }
 function exportBackup(){ const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([JSON.stringify({settings,characters,chats,memoriesByChar},null,2)],{type:'application/json'})); a.download=`ghazlan_backup.json`; a.click(); }
 function importBackup(inp){ const f=inp.files?.[0]; if(!f)return; const r=new FileReader(); r.onload=()=>{try{const d=JSON.parse(r.result);if(d.settings)settings={...settings,...d.settings};if(d.characters)characters=d.characters;if(d.chats)chats=d.chats;if(d.memoriesByChar)memoriesByChar=d.memoriesByChar;saveCharacters();saveChats();saveMemories();renderHomeScreen();showToast('تم الاسترجاع ✅');}catch{showToast('ملف غير صالح');}}; r.readAsText(f); inp.value=''; }
@@ -1908,7 +1895,7 @@ box.innerHTML=`<div class="sec-title"><span>🎛️ مظهر وأصوات (v8)</
 <div class="field"><label>مستوى الصوت</label><input id="v8vol" type="range" min="10" max="100" value="${S('vol','60')}"></div>
 <div class="field"><label>شكل الفقاعات</label>${sel('v8bub',[['grad','متدرجة (ماسنجر)'],['flat','لون واحد'],['glass','زجاجية'],['outline','حدود فقط']],S('bub','grad'))}</div>
 <div class="field"><label>الخط</label>${sel('v8ff',[['','الافتراضي'],['rounded','دائري'],['serif','كلاسيكي'],['mono','برمجي']],S('ff',''))}</div>
-${sw('v8fx','🎆 مؤثرات الرموز على الشاشة',S('fx','1')==='1')}${sw('v8anim','🎞️ حركة ظهور الرسائل',S('anim','1')==='1')}${sw('v8hap','📳 اهتزاز عند الإرسال',S('hap','1')==='1')}${sw('v8headchk','🫧 الفقاعة العائمة (Chat Head) داخل التطبيق',S('head','1')==='1')}`;
+${sw('v8fx','🎆 مؤثرات الرموز على الشاشة',S('fx','1')==='1')}${sw('v8anim','🎞️ حركة ظهور الرسائل',S('anim','1')==='1')}${sw('v8hap','📳 اهتزاز عند الإرسال',S('hap','1')==='1')}${sw('v8headchk','🫧 الفقاعة العائمة (Chat Head) داخل التطبيق',S('head','0')==='1')}`;
 $('settingsBg').querySelector('.sec-box').before(box);
 const ap=()=>{document.body.dataset.bub=S('bub','grad');document.body.dataset.ff=S('ff','');document.body.dataset.anim=S('anim','1')};ap();
 const bind=(id,k,ck)=>$(id).onchange=e=>{W(k,ck?(e.target.checked?'1':'0'):e.target.value);ap();headTick()};
@@ -1916,8 +1903,7 @@ bind('v8ss','snd_send');bind('v8sr','snd_recv');bind('v8bub','bub');bind('v8ff',
 $('v8vol').oninput=e=>W('vol',e.target.value);$('v8ps').onclick=()=>playSound('send');$('v8pr').onclick=()=>playSound('receive');
 /* GIF search (works without key; own Giphy key recommended) */
 let trend=[],tried=false;
-async function gifFetch(q){const k=settings.giphyKey||'dc6zaTOxFJmzC';try{const r=await fetch(`https://api.giphy.com/v1/gifs/${q?'search?q='+encodeURIComponent(q)+'&':'trending?'}api_key=${k}&limit=24&rating=pg-13`);const d=await r.json();const u=(d.data||[]).map(g=>g.images?.fixed_width?.url).filter(Boolean);if(u.length)return u}catch{}
- try{const r=await fetch(`https://g.tenor.com/v1/${q?'search?q='+encodeURIComponent(q)+'&':'trending?'}key=LIVDSRZULELA&limit=24`);const d=await r.json();return(d.results||[]).map(x=>x.media?.[0]?.tinygif?.url).filter(Boolean)}catch{}return[]}
+async function gifFetch(q){return window.GhazlanAPI ? await window.GhazlanAPI.searchGifs(q) : []}
 const tiles=(u,q)=>u.map(x=>`<div class="gif-tile" onclick="sendGif('${x}','${esc(q||'GIF')}')"><img src="${x}" loading="lazy"></div>`).join('');
 async function showGifs(q){const g=$('trayGrid');g.className='tray-grid gifs';g.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:18px;color:var(--muted)">⏳ جاري البحث...</div>';const u=await gifFetch(q);g.innerHTML=u.length?tiles(u,q):'<div style="grid-column:1/-1;text-align:center;padding:18px;color:var(--muted)">لا نتائج (تأكد من الإنترنت أو ضع مفتاح GIPHY في الإعدادات)</div>'}
 onTraySearch=function(v){mediaSearch=v.trim().toLowerCase();if(mediaTab==='gifs'&&mediaSearch.length>1){clearTimeout(gifSearchTimer);gifSearchTimer=setTimeout(()=>showGifs(mediaSearch),350)}else renderMediaTray()};
@@ -1931,16 +1917,17 @@ const head=document.createElement('div');head.id='v8head';head.innerHTML='<div c
 let unread=0,hdTs=Date.now(),pos=JSON.parse(S('headpos','null')||'null')||{x:innerWidth-72,y:innerHeight*.45};
 const place=()=>{head.style.left=pos.x+'px';head.style.top=pos.y+'px'};place();
 const inChat=()=>getComputedStyle($('chatScreen')).display!=='none';
-function headTick(){const c=chats.find(x=>x.id===currentChatId)||chats[0];const on=S('head','1')==='1'&&c&&!inChat();head.style.display=on?'block':'none';if(!on){pv.style.display='none';return}
+function headTick(){const c=chats.find(x=>x.id===currentChatId)||chats[0];const on=S('head','0')==='1'&&c&&!inChat();head.style.display=on?'block':'none';if(!on){pv.style.display='none';return}
  const ch=getChar(c.charId||c.memberIds?.[0]);head.querySelector('.hv').innerHTML=renderAvatarHtml(ch);const b=head.querySelector('.bd');b.style.display=unread?'flex':'none';b.textContent=unread}
 setInterval(headTick,800);
 let drag=null;head.addEventListener('pointerdown',e=>{drag={dx:e.clientX-pos.x,dy:e.clientY-pos.y,m:false};head.setPointerCapture(e.pointerId)});
 head.addEventListener('pointermove',e=>{if(!drag)return;const x=e.clientX-drag.dx,y=e.clientY-drag.dy;if(Math.abs(x-pos.x)+Math.abs(y-pos.y)>6)drag.m=true;pos={x:Math.max(0,Math.min(innerWidth-62,x)),y:Math.max(0,Math.min(innerHeight-62,y))};place();pv.style.display='none'});
 head.addEventListener('pointerup',()=>{if(!drag)return;const mv=drag.m;drag=null;if(mv){pos.x=pos.x+31<innerWidth/2?6:innerWidth-68;head.style.transition='left .25s';place();setTimeout(()=>head.style.transition='',260);W('headpos',JSON.stringify(pos))}else{const c=chats.find(x=>x.id===currentChatId)||chats[0];if(c){unread=0;openChatById(c.id);headTick()}}});
 const _oc=openChatById;openChatById=function(id){unread=0;_oc(id);headTick()};
-const _r3=renderCurrentChat;renderCurrentChat=function(){_r3();const c=getChat(),lm=c?.messages?.at(-1);if(lm&&lm.ts>hdTs){hdTs=lm.ts;if(lm.role==='model'&&!inChat()&&S('head','1')==='1'){unread++;headTick();pv.textContent=(lm.raw||'📎 ملصق').slice(0,70);pv.style.display='block';pv.style.top=Math.max(8,pos.y+6)+'px';pv.style[pos.x<innerWidth/2?'left':'right']=(pos.x<innerWidth/2?pos.x+70:innerWidth-pos.x+4)+'px';pv.style[pos.x<innerWidth/2?'right':'left']='auto';setTimeout(()=>pv.style.display='none',4500)}}};
+const _r3=renderCurrentChat;renderCurrentChat=function(){_r3();const c=getChat(),lm=c?.messages?.at(-1);if(lm&&lm.ts>hdTs){hdTs=lm.ts;if(lm.role==='model'&&!inChat()&&S('head','0')==='1'){unread++;headTick();pv.textContent=(lm.raw||'📎 ملصق').slice(0,70);pv.style.display='block';pv.style.top=Math.max(8,pos.y+6)+'px';pv.style[pos.x<innerWidth/2?'left':'right']=(pos.x<innerWidth/2?pos.x+70:innerWidth-pos.x+4)+'px';pv.style[pos.x<innerWidth/2?'right':'left']='auto';setTimeout(()=>pv.style.display='none',4500)}}};
 })();
 
 </script>
+<script src="bridge.js"></script>
 </body>
 </html>
